@@ -35,7 +35,7 @@
 %%
 %% Exported Functions
 %%
--export([good/0]).
+-export([start/0]).
 
 %%
 %% API Functions
@@ -43,7 +43,7 @@
 
 -record(lineinfo, {	max, total, bigfunc, curfunc, hlines, clines } ).
 
-good() ->
+start() ->
 	Src = filename:absname("src"),
 	{ok, Listing} = file:list_dir(Src),
 	review(Src, Listing).
