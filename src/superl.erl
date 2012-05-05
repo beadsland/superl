@@ -23,8 +23,21 @@
 %% CDDL HEADER END
 
 %% @doc Simple style checker for Erlang modules.
+%% @reference Rudimentary checks for 
+%% <a href="http://www.erlang.se/doc/programming_rules.shtml#REF11301">
+%% Erlang style conventions</a>.
+%% @end
+%% @reference See also
+%% <a href="http://www.erlang.se/doc/programming_rules.shtml#REF66257">
+%% Most Common Mistakes</a> section of same document.
+%% @end
 %% @author Beads D. Land-Trujillo [http://twitter.com/beadsland]
 %% @copyright 2012 Beads D. Land-Trujillo
+
+%% @todo warn missing function specs
+%% @todo check for bad function types (rewrite as edoc doclet??)
+%% @todo check for deep nesting (largely dealt with by line/func length)
+%% @todo simple variable naming tests
 
 %% @version 0.1.0
 -module(superl).
