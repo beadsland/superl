@@ -34,8 +34,7 @@
 %% @author Beads D. Land-Trujillo [http://twitter.com/beadsland]
 %% @copyright 2012 Beads D. Land-Trujillo
 
-%% @todo warn missing function specs
-%% @todo check for bad function types (rewrite as edoc doclet??)
+%% @todo check for bad return types (rewrite as edoc doclet??)
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
@@ -47,6 +46,8 @@
 %% Include files
 %%
 
+-record(lineinfo, {	max, total, bigfunc, curfunc, hlines, clines, specs } ).
+
 %%
 %% Exported Functions
 %%
@@ -55,8 +56,6 @@
 %%
 %% API Functions
 %%
-
--record(lineinfo, {	max, total, bigfunc, curfunc, hlines, clines } ).
 
 start() ->
 	Src = filename:absname("src"),
