@@ -38,13 +38,17 @@
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
-%% @version 0.1.0
+%% @version 0.1.1
 -module(superl).
--version("0.1.0").
+-version("0.1.1").
 
 %%
 %% Include files
 %%
+
+-include("macro.hrl").
+
+-include_lib("kernel/include/file.hrl").
 
 -record(lineinfo, {	max, total, bigfunc, curfunc, hlines, clines, specs } ).
 
@@ -58,13 +62,28 @@
 %%
 
 start() ->
+	io:format("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
+	Pwd = filename:absname(""),
+
 	Src = filename:absname("src"),
+	file:set_cwd(Src),
+	
 	{ok, Listing} = file:list_dir(Src),
-	review(Src, Listing).
+	Sorted = lists:sort(fun more_recently_modified/2, Listing),
+
+	review(Src, Sorted),
+	file:set_cwd(Pwd).
 
 %%
 %% Local Functions
 %%
+
+more_recently_modified(File1, File2) ->
+	{ok, FileInfo1} = file:read_file_info(File1),
+	{ok, FileInfo2} = file:read_file_info(File2),
+	if FileInfo1#file_info.mtime > FileInfo2#file_info.mtime 	-> true;
+	   true														-> false
+	end.
 
 review(_Dir, []) -> ok;
 review(Dir, [Head | Tail]) ->
@@ -138,3 +157,4 @@ function_length(Count, Line) ->
 						_Else				-> {Count + 1, code}
 				   end
 	end.
+
