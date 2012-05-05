@@ -1,5 +1,5 @@
 # -------------------
-# Makefile for nosh
+# Makefile for superl
 # -------------------
 
 # CDDL HEADER START
