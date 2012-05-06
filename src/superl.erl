@@ -34,6 +34,7 @@
 %% @author Beads D. Land-Trujillo [http://twitter.com/beadsland]
 %% @copyright 2012 Beads D. Land-Trujillo
 
+%% @todo add nosh executable behaviour (not yet defined)
 %% @todo check for bad return types (rewrite as edoc doclet??)
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
@@ -116,11 +117,11 @@ test_lines(Dir, File) ->
 
 report_results(Module, Info) ->
 	Ratio = round(Info#lineinfo.hlines / Info#lineinfo.clines * 100),
-	if Info#lineinfo.max > 78 ->
+	if Info#lineinfo.max > 80 ->
 			io:format(?WARN_LINES, [Module, Info#lineinfo.max]), nogood;
-	   Info#lineinfo.total > 380 ->
+	   Info#lineinfo.total > 400 ->
 	   		io:format(?WARN_MODULES, [Module, Info#lineinfo.total]), nogood;
-	   Info#lineinfo.bigfunc > 18 ->
+	   Info#lineinfo.bigfunc > 20 ->
 	   		io:format(?WARN_FUNC, [Module, Info#lineinfo.bigfunc]), nogood;
 	   Ratio < 25 ->
 	   		io:format(?WARN_DOC, [Module, Ratio]), nogood;
