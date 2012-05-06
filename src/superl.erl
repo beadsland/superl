@@ -38,9 +38,9 @@
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
-%% @version 0.1.1
+%% @version 0.1.2
 -module(superl).
--version("0.1.1").
+-version("0.1.2").
 
 %%
 %% Include files
@@ -71,7 +71,11 @@ start() ->
 	{ok, Listing} = file:list_dir(Src),
 	Sorted = lists:sort(fun more_recently_modified/2, Listing),
 
-	review(Src, Sorted),
+	case review(Src, Sorted) of
+		good	-> io:format("All good!\n");
+		nogood	-> io:format("Not yet superly good.\n")
+	end,
+	
 	file:set_cwd(Pwd).
 
 %%
@@ -85,12 +89,17 @@ more_recently_modified(File1, File2) ->
 	   true														-> false
 	end.
 
-review(_Dir, []) -> ok;
+review(_Dir, []) -> good;
 review(Dir, [Head | Tail]) ->
 	{ok, MP} = re:compile("\.[he]rl$"),
 	case re:run(Head, MP, [{capture, none}]) of
 		nomatch	-> review(Dir, Tail);
-		match	-> test_lines(Dir, Head), review(Dir, Tail)
+		match	-> HeadResult = test_lines(Dir, Head), 
+				   TailResult = review(Dir, Tail),
+				   case HeadResult of
+					   nogood	-> nogood;
+					   good		-> TailResult
+				   end
 	end.
 	
 test_lines(Dir, File) ->
@@ -98,20 +107,24 @@ test_lines(Dir, File) ->
 	{ok, MP} = re:compile("^(.*)\.[he]rl$"),
 	{match, [Module]} = re:run(File, MP, [{capture, [1], list}]),
 	Info = line_info(FileID),
+	report_results(Module, Info).
+
+-define(WARN_LINES, "~s: avoid long lines (~p char line found)~n").
+-define(WARN_MODULES, "~s: avoid long modules (~p lines found)~n").
+-define(WARN_FUNC, "~s: avoid long functions (~p line function found)~n").
+-define(WARN_DOC, "~s: document code (~p% comment-to-code ratio found)~n").
+
+report_results(Module, Info) ->
 	Ratio = round(Info#lineinfo.hlines / Info#lineinfo.clines * 100),
 	if Info#lineinfo.max > 78 ->
-			io:format("~s: avoid long lines (~p char line detected)~n", 
-					[Module, Info#lineinfo.max]);
+			io:format(?WARN_LINES, [Module, Info#lineinfo.max]), nogood;
 	   Info#lineinfo.total > 380 ->
-	   		io:format("~s: avoid long modules (~p lines detected)~n",
-	   				[Module, Info#lineinfo.total]);
+	   		io:format(?WARN_MODULES, [Module, Info#lineinfo.total]), nogood;
 	   Info#lineinfo.bigfunc > 18 ->
-	   		io:format("~s: avoid long functions (~p line function detected)~n", 
-	   				[Module, Info#lineinfo.bigfunc]);
-	   Ratio < 20 ->
-	   		io:format("~s: document code (~p% CtC ratio)~n", 
-	   				[Module, Ratio]);
-	   true -> false
+	   		io:format(?WARN_FUNC, [Module, Info#lineinfo.bigfunc]), nogood;
+	   Ratio < 25 ->
+	   		io:format(?WARN_DOC, [Module, Ratio]), nogood;
+	   true -> good
 	end.
 	
 line_info(FileID) ->
@@ -122,31 +135,33 @@ line_info(FileID) ->
 									bigfunc = 0,
 									hlines = 0,
 									clines = 0 };
-		{ok, Line} 	-> Info = line_info(FileID),
-					   
-					   NewMax = max(string:len(Line), Info#lineinfo.max),
-					   NewTotal = Info#lineinfo.total + 1,
-					   {NewCurFunc, LineType} = 
-					   		function_length(Info#lineinfo.curfunc, Line),
-					   NewBigFunc = max(Info#lineinfo.bigfunc, NewCurFunc),
-					   if LineType == header ->
-					   		NewHLine = Info#lineinfo.hlines + 1,
-					   		NewCLine = Info#lineinfo.clines;
-					   	  LineType == code ->
-					   	    NewHLine = Info#lineinfo.hlines,
-					   	    NewCLine = Info#lineinfo.clines + 1;
-					   	  true ->	% LineType == blank
-					   	    NewHLine = Info#lineinfo.hlines,
-					   	    NewCLine = Info#lineinfo.clines
-					   end,
-					   Info#lineinfo{	max = NewMax, 
-					   					total = NewTotal,
-					   					curfunc = NewCurFunc,
-					   					bigfunc = NewBigFunc,
-					   					hlines = NewHLine,
-					   					clines = NewCLine	}
+		{ok, Line} 	-> line_info(FileID, Line)
 	end.
+
+% @TODO rewrite this so it's tail recursive
+line_info(FileID, Line) ->
+	Info = line_info(FileID),
 	
+	NewMax = max(string:len(Line), Info#lineinfo.max),
+   	NewTotal = Info#lineinfo.total + 1,
+   	{NewCurFunc, LineType} = function_length(Info#lineinfo.curfunc, Line),
+   	NewBigFunc = max(Info#lineinfo.bigfunc, NewCurFunc),
+	
+	{NewHLine, NewCLine} = line_counters(Info, LineType),
+	
+	Info#lineinfo{	max = NewMax,			total = NewTotal,
+   					curfunc = NewCurFunc,	bigfunc = NewBigFunc,
+   					hlines = NewHLine,		clines = NewCLine	}.
+
+line_counters(Info, LineType) ->
+	if LineType == header ->
+		   {Info#lineinfo.hlines + 1, Info#lineinfo.clines};
+	   LineType == code ->
+		   {Info#lineinfo.hlines, Info#lineinfo.clines + 1};
+	   true ->	% LineType == blank
+		   {Info#lineinfo.hlines, Info#lineinfo.clines}
+   	end.
+
 function_length(Count, Line) ->
 	{ok, MP} = re:compile("^[^\\%]+\\.\\ *$"),
 	case re:run(Line, MP, [{capture, none}]) of
