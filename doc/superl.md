@@ -12,7 +12,7 @@ Simple style checker for Erlang modules.
 
 Copyright (c) 2012 Beads D. Land-Trujillo
 
-__Version:__ 0.1.2
+__Version:__ 0.1.3
 
 __Authors:__ Beads D. Land-Trujillo (_web site:_ [`http://twitter.com/beadsland`](http://twitter.com/beadsland)).
 
@@ -26,6 +26,7 @@ Most Common Mistakes](http://www.erlang.se/doc/programming_rules..md#REF66257) s
 
 __<font color="red">To do</font>__
 <br></br>
+* <font color="red">add nosh executable behaviour (not yet defined)</font>
 * <font color="red">check for bad return types (rewrite as edoc doclet??)</font>
 * <font color="red">check for deep nesting (largely dealt with by line/func length)</font>
 * <font color="red">simple variable naming tests</font>

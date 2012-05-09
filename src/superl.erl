@@ -39,9 +39,9 @@
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
-%% @version 0.1.2
+%% @version 0.1.3
 -module(superl).
--version("0.1.2").
+-version("0.1.3").
 
 %%
 %% Include files
@@ -51,7 +51,7 @@
 
 -include_lib("kernel/include/file.hrl").
 
--record(lineinfo, {	max, total, bigfunc, curfunc, hlines, clines, specs } ).
+-record(lineinfo, {	tabs, max, total, bigfunc, curfunc, hlines, clines, specs } ).
 
 %%
 %% Exported Functions
@@ -110,6 +110,7 @@ test_lines(Dir, File) ->
 	Info = line_info(FileID),
 	report_results(Module, Info).
 
+-define(WARN_TABS, "~s: avoid leaving tabs (convert to spaces)~n").
 -define(WARN_LINES, "~s: avoid long lines (~p char line found)~n").
 -define(WARN_MODULES, "~s: avoid long modules (~p lines found)~n").
 -define(WARN_FUNC, "~s: avoid long functions (~p line function found)~n").
@@ -117,7 +118,9 @@ test_lines(Dir, File) ->
 
 report_results(Module, Info) ->
 	Ratio = round(Info#lineinfo.hlines / Info#lineinfo.clines * 100),
-	if Info#lineinfo.max > 80 ->
+	if Info#lineinfo.tabs == true ->
+			io:format(?WARN_TABS, [Module]), nogood;
+	   Info#lineinfo.max > 80 ->
 			io:format(?WARN_LINES, [Module, Info#lineinfo.max]), nogood;
 	   Info#lineinfo.total > 400 ->
 	   		io:format(?WARN_MODULES, [Module, Info#lineinfo.total]), nogood;
@@ -130,7 +133,8 @@ report_results(Module, Info) ->
 	
 line_info(FileID) ->
 	case file:read_line(FileID) of
-		eof			-> #lineinfo{	max = 0,
+		eof			-> #lineinfo{	tabs = false,
+									max = 0,
 									total = 0,
 									curfunc = 0,
 									bigfunc = 0,
@@ -143,6 +147,11 @@ line_info(FileID) ->
 line_info(FileID, Line) ->
 	Info = line_info(FileID),
 	
+	case re:run(Line, "\t", [{capture, none}]) of
+		nomatch	-> NewTabs = Info#lineinfo.tabs;
+		match	-> NewTabs = true
+	end,
+
 	NewMax = max(string:len(Line), Info#lineinfo.max),
    	NewTotal = Info#lineinfo.total + 1,
    	{NewCurFunc, LineType} = function_length(Info#lineinfo.curfunc, Line),
@@ -150,7 +159,8 @@ line_info(FileID, Line) ->
 	
 	{NewHLine, NewCLine} = line_counters(Info, LineType),
 	
-	Info#lineinfo{	max = NewMax,			total = NewTotal,
+	Info#lineinfo{	tabs = NewTabs, 		
+					max = NewMax,			total = NewTotal,
    					curfunc = NewCurFunc,	bigfunc = NewBigFunc,
    					hlines = NewHLine,		clines = NewCLine	}.
 
@@ -173,4 +183,3 @@ function_length(Count, Line) ->
 						_Else				-> {Count + 1, code}
 				   end
 	end.
-
