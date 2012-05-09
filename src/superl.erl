@@ -118,7 +118,7 @@ test_lines(Dir, File) ->
 -define(WARN_DOC, "~s: document code (~p% comment-to-code ratio found)~n").
 
 report_results(Module, Info) ->
-  Ratio = round(Info#lineinfo.hlines / Info#lineinfo.clines * 100),
+  Ratio = round(Info#lineinfo.hlines / (Info#lineinfo.clines+1) * 100),
   if Info#lineinfo.tabs == true ->
       io:format(?WARN_TABS, [Module]), nogood;
      Info#lineinfo.max > 80 ->
