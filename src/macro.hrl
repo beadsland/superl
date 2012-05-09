@@ -1,10 +1,10 @@
 %% CDDL HEADER START
 %% -----------------------------------------------------------------------
-%% The contents of this file are subject to the Common Development and 
-%% Distribution License, Version 1.0 (the "License"); you may not use 
-%% this file except in compliance with the License.  You should have 
-%% received a copy of the Common Development and Distribution License 
-%% along with this software.  If not, it can be retrieved online at 
+%% The contents of this file are subject to the Common Development and
+%% Distribution License, Version 1.0 (the "License"); you may not use
+%% this file except in compliance with the License.  You should have
+%% received a copy of the Common Development and Distribution License
+%% along with this software.  If not, it can be retrieved online at
 %% http://www.opensource.org/licenses/CDDL-1.0
 %%
 %% Software distributed under the License is distributed on an "AS IS"
@@ -23,6 +23,6 @@
 %% CDDL HEADER END
 
 -import(proplists).
--define(ATTRIB(Module, Attribute), 
-		proplists:get_value(Attribute, Module:module_info(attributes))).
+-define(ATTRIB(Module, Attribute),
+    proplists:get_value(Attribute, Module:module_info(attributes))).
 -define(VERSION(Module), ?ATTRIB(Module, version)).

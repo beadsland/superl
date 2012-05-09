@@ -51,7 +51,8 @@
 
 -include_lib("kernel/include/file.hrl").
 
--record(lineinfo, {	tabs, max, total, bigfunc, curfunc, hlines, clines, specs } ).
+-record(lineinfo,
+        {	tabs, max, total, bigfunc, curfunc, hlines, clines, specs } ).
 
 %%
 %% Exported Functions
