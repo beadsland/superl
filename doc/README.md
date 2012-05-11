@@ -22,7 +22,7 @@ This is the superly good style checker for Erlang modules.
 ###<a name="Installation">Installation</a>##
  
 
-Superl is relatively lightweight, and be included as a project
+`superl` is relatively lightweight, and be included as a project
   dependency via `rebar.config`: 
 
 `{deps, [     {pose, ".*",       {git, "git://github.com/beadsland/pose", {branch, master}}}    ]}` 
@@ -45,7 +45,8 @@ leading tabs on any line.  The number of spaces tabs are rendered
 at in any given editor are not guaranteed, and thus they should be 
 converted to spaces to ensure stylistic indentation is portable across 
 development environments. If using the Eclipse IDE, one way to handle this is with the AnyEdit
-  Tools plugin, available in the Eclipse Marketplace.
+  Tools plugin [`http://andrei.gmxhome.de/anyedit/`](http://andrei.gmxhome.de/anyedit/), available in the
+  Eclipse Marketplace.
 
 ##Modules##
 

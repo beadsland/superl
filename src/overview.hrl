@@ -34,7 +34,7 @@
 %%
 %% ==Installation==
 %%
-%% Superl is relatively lightweight, and be included as a project
+%% `superl' is relatively lightweight, and be included as a project
 %% dependency via `rebar.config':
 %%
 %% `{deps, [
@@ -61,5 +61,6 @@
 %% development environments.
 %%
 %% If using the Eclipse IDE, one way to handle this is with the AnyEdit
-%% Tools plugin, available in the Eclipse Marketplace.
+%% Tools plugin [http://andrei.gmxhome.de/anyedit/], available in the
+%% Eclipse Marketplace.
 %% @end
