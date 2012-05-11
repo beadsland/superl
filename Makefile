@@ -60,6 +60,8 @@ good:	current
 compile:
 	@rebar compile doc | $(HIDE_EDOC_WARN) | $(SUCCINCT)
 
+doc:	compile
+
 current:
 	@rebar update-deps compile doc | $(HIDE_EDOC_WARN) | $(SUCCINCT)
 

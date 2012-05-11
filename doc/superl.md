@@ -6,7 +6,7 @@
 * [Function Details](#functions)
 
 
-Simple style checker for Erlang modules.
+This is the superly good style checker for Erlang modules.
 
 
 
@@ -30,12 +30,19 @@ __<font color="red">To do</font>__
 * <font color="red">check for bad return types (rewrite as edoc doclet??)</font>
 * <font color="red">check for deep nesting (largely dealt with by line/func length)</font>
 * <font color="red">simple variable naming tests</font>
-<a name="index"></a>
+<a name="description"></a>
+
+##Description##
+ Checks all modules and header files in a project src directory for
+good style, and reports the first issue it finds in each file.
+Files are sorted by last modification date, such that the issues
+in the most recently updated files are the first identified.<a name="index"></a>
 
 ##Function Index##
 
 
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#start-0">start/0</a></td><td></td></tr></table>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Runs superly good style check on Erlang source and header files
+in <code>src/</code> directory of current project.</td></tr></table>
 
 
 <a name="functions"></a>
@@ -49,5 +56,12 @@ __<font color="red">To do</font>__
 
 
 
-`start() -> any()`
+<pre>start() -&gt; ok</pre>
+<br></br>
 
+
+
+
+Runs superly good style check on Erlang source and header files
+in `src/` directory of current project.  All results are written to
+standard output.

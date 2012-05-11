@@ -22,7 +22,13 @@
 %% -----------------------------------------------------------------------
 %% CDDL HEADER END
 
-%% @doc Simple style checker for Erlang modules.
+%% @doc This is the superly good style checker for Erlang modules.
+%%
+%% Checks all modules and header files in a project src directory for
+%% good style, and reports the first issue it finds in each file.
+%% Files are sorted by last modification date, such that the issues
+%% in the most recently updated files are the first identified.
+%% @end
 %% @reference Rudimentary checks for
 %% <a href="http://www.erlang.se/doc/programming_rules.shtml#REF11301">
 %% Erlang style conventions</a>.
@@ -63,6 +69,11 @@
 %% API Functions
 %%
 
+%% @doc Runs superly good style check on Erlang source and header files
+%% in `src/' directory of current project.  All results are written to
+%% standard output.
+%% @end
+-spec start() -> ok.
 start() ->
   io:format("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
   Pwd = filename:absname(""),
@@ -78,11 +89,17 @@ start() ->
     nogood	-> io:format("Not yet superly good.\n")
   end,
 
-  file:set_cwd(Pwd).
+  file:set_cwd(Pwd),
+  ok.
 
 %%
 %% Local Functions
 %%
+
+% @hidden Export to allow for hotswap.
+loop(_IO) ->
+  true.
+
 
 more_recently_modified(File1, File2) ->
   {ok, FileInfo1} = file:read_file_info(File1),
