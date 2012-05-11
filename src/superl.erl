@@ -40,14 +40,13 @@
 %% @author Beads D. Land-Trujillo [http://twitter.com/beadsland]
 %% @copyright 2012 Beads D. Land-Trujillo
 
-%% @todo add nosh executable behaviour (not yet defined)
 %% @todo check for bad return types (rewrite as edoc doclet??)
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
-%% @version 0.1.3
+%% @version 0.1.4
 -module(superl).
--version("0.1.3").
+-version("0.1.4").
 
 %%
 %% Include files
