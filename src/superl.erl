@@ -97,9 +97,8 @@ start() ->
 %%
 
 % @hidden Export to allow for hotswap.
-loop(_IO) ->
-  true.
-
+%loop(_IO) ->
+%  true.
 
 more_recently_modified(File1, File2) ->
   {ok, FileInfo1} = file:read_file_info(File1),
