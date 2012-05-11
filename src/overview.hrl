@@ -22,8 +22,15 @@
 %% -----------------------------------------------------------------------
 %% CDDL HEADER END
 
+%% @todo add dependency soft-linking option to rebar
+
 %% @doc This is the superly good style checker for Erlang modules.
 %% See {@link superl} module documentation for features and usage.
+%%
+%% <ul>
+%% <li> {@section Installation} </li>
+%% <li> {@section Converting Tabs} </li>
+%% </ul>
 %%
 %% ==Installation==
 %%
@@ -44,4 +51,15 @@
 %% in project makefiles, resulting in an invocation of:
 %%
 %% `> make good'
+%%
+%% ==Converting Tabs==
+%%
+%% The first test `superl' runs on any file is to check of there are
+%% leading tabs on any line.  The number of spaces tabs are rendered
+%% at in any given editor are not guaranteed, and thus they should be
+%% converted to spaces to ensure stylistic indentation is portable across
+%% development environments.
+%%
+%% If using the Eclipse IDE, one way to handle this is with the AnyEdit
+%% Tools plugin, available in the Eclipse Marketplace.
 %% @end
