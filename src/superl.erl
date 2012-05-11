@@ -70,31 +70,36 @@
 %%
 
 %% @doc Runs superly good style check on Erlang source and header files
-%% in `src/' directory of current project.  All results are written to
-%% standard output.
+%% in `src/' and `include/' directories of current project.  All results
+%% are written to standard output.
 %% @end
 -spec start() -> ok.
 start() ->
   io:format("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
-  Pwd = filename:absname(""),
 
   Src = filename:absname("src"),
-  file:set_cwd(Src),
+  Inc = filename:absname("include"),
 
-  {ok, Listing} = file:list_dir(Src),
-  Sorted = lists:sort(fun more_recently_modified/2, Listing),
+  {ok, SrcList} = file:list_dir(Src),
+  {ok, IncList} = file:list_dir(Inc),
 
-  case review(Src, Sorted) of
+  Pred = fun(X) -> lists:suffix(".erl", X) orelse lists:suffix(".hrl", X) end,
+  SrcComp = [ lists:append([Src, "/", X]) || X <- SrcList, Pred(X) ],
+  IncComp = [ lists:append([Inc, "/", X]) || X <- IncList, Pred(X) ],
+
+  Sorted = lists:sort(fun more_recently_modified/2, SrcComp ++ IncComp),
+
+  case review(Sorted) of
     good	-> io:format("All good!\n");
     nogood	-> io:format("Not yet superly good.\n")
   end,
 
-  file:set_cwd(Pwd),
   ok.
 
 %%
 %% Local Functions
 %%
+
 
 % @hidden Export to allow for hotswap.
 %loop(_IO) ->
@@ -104,24 +109,19 @@ more_recently_modified(File1, File2) ->
   {ok, FileInfo1} = file:read_file_info(File1),
   {ok, FileInfo2} = file:read_file_info(File2),
   if FileInfo1#file_info.mtime > FileInfo2#file_info.mtime 	-> true;
-     true														-> false
+     true													-> false
   end.
 
-review(_Dir, []) -> good;
-review(Dir, [Head | Tail]) ->
-  {ok, MP} = re:compile("\.[he]rl$"),
-  case re:run(Head, MP, [{capture, none}]) of
-    nomatch	-> review(Dir, Tail);
-    match	-> HeadResult = test_lines(Dir, Head),
-           TailResult = review(Dir, Tail),
-           case HeadResult of
-             nogood	-> nogood;
-             good		-> TailResult
-           end
+review([]) -> good;
+review([Head | Tail]) ->
+  TailResult = review(Tail),
+  case test_lines(Head) of
+    nogood	-> nogood;
+    good	-> TailResult
   end.
 
-test_lines(Dir, File) ->
-  {ok, FileID} = file:open(Dir ++ "/" ++ File, [read]),
+test_lines(File) ->
+  {ok, FileID} = file:open(File, [read]),
   {ok, MP} = re:compile("^(.*)\.[he]rl$"),
   {match, [Module]} = re:run(File, MP, [{capture, [1], list}]),
   Info = line_info(FileID),
@@ -136,15 +136,15 @@ test_lines(Dir, File) ->
 report_results(Module, Info) ->
   Ratio = round(Info#lineinfo.hlines / (Info#lineinfo.clines+1) * 100),
   if Info#lineinfo.tabs == true ->
-      io:format(?WARN_TABS, [Module]), nogood;
+       io:format(?WARN_TABS, [Module]), nogood;
      Info#lineinfo.max > 80 ->
-      io:format(?WARN_LINES, [Module, Info#lineinfo.max]), nogood;
+       io:format(?WARN_LINES, [Module, Info#lineinfo.max]), nogood;
      Info#lineinfo.total > 400 ->
-         io:format(?WARN_MODULES, [Module, Info#lineinfo.total]), nogood;
+       io:format(?WARN_MODULES, [Module, Info#lineinfo.total]), nogood;
      Info#lineinfo.bigfunc > 20 ->
-         io:format(?WARN_FUNC, [Module, Info#lineinfo.bigfunc]), nogood;
+       io:format(?WARN_FUNC, [Module, Info#lineinfo.bigfunc]), nogood;
      Ratio < 25 ->
-         io:format(?WARN_DOC, [Module, Ratio]), nogood;
+       io:format(?WARN_DOC, [Module, Ratio]), nogood;
      true -> good
   end.
 

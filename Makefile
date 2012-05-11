@@ -52,9 +52,9 @@ SUCCINCT	=	grep -v "Entering directory" | grep -v "Leaving directory"
 
 all:	push-superl good
 
-run:	good
+run:	current good
 
-good:	current
+good:	compile
 	@erl -pa ebin -noshell -s superl -s init stop
 		
 compile:

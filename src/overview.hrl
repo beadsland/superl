@@ -23,7 +23,7 @@
 %% CDDL HEADER END
 
 %% @doc This is the superly good style checker for Erlang modules.
-%% See {@link superl} module documentation for features.
+%% See {@link superl} module documentation for features and usage.
 %%
 %% ==Installation==
 %%

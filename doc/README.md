@@ -10,7 +10,7 @@ __Version:__ 0.1.0
 __Authors:__ Beads D. Land-Trujillo (_web site:_ [`http://twitter.com/beadsland`](http://twitter.com/beadsland)).
 
 This is the superly good style checker for Erlang modules.
-  See [`superl`](superl.md) module documentation for features. 
+  See [`superl`](superl.md) module documentation for features and usage. 
 
 ###<a name="Installation">Installation</a>##
  

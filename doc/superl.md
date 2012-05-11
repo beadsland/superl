@@ -42,7 +42,7 @@ in the most recently updated files are the first identified.<a name="index"></a>
 
 
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Runs superly good style check on Erlang source and header files
-in <code>src/</code> directory of current project.</td></tr></table>
+in <code>src/</code> and <code>include/</code> directories of current project.</td></tr></table>
 
 
 <a name="functions"></a>
@@ -63,5 +63,5 @@ in <code>src/</code> directory of current project.</td></tr></table>
 
 
 Runs superly good style check on Erlang source and header files
-in `src/` directory of current project.  All results are written to
-standard output.
+in `src/` and `include/` directories of current project.  All results
+are written to standard output.
