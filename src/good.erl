@@ -40,6 +40,9 @@
 %% Include files
 %%
 
+%-define(debug, true).
+-include("pose/include/interface.hrl").
+
 %%
 %% Exported Functions
 %%
@@ -49,6 +52,8 @@
 %% API Functions
 %%
 
+%% @equiv superl:run(IO)
+-spec run(IO :: #std{}) -> no_return().
 run(IO) -> superl:run(IO).
 
 %%

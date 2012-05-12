@@ -44,6 +44,8 @@
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
+%% @version 0.1.6
+
 % BEGIN NOSH PACKAGE PATTERN
 -ifndef(package).
 -module(superl).
@@ -54,7 +56,6 @@
 -endif.
 % END NOSH PACKAGE PATTERN
 
-%% @version 0.1.6
 -version("0.1.6").
 
 %%
@@ -98,7 +99,7 @@ start() ->
 %% @doc Start superly good style check as a
 %% <a href="http://github.com/beadsland/pose"><cmd>pose</cmd></a> process.
 %% @end
--spec run(IO :: #std{}) -> ok | nogood.
+-spec run(IO :: #std{}) -> no_return().
 %
 run(IO) ->
   ?INIT_POSE,
