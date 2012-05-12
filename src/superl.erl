@@ -70,6 +70,7 @@
 -import(lists).
 -import(io).
 -import(re).
+-import(string).
 
 -include_lib("kernel/include/file.hrl").
 -include("macro.hrl").
