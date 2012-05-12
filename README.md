@@ -28,7 +28,7 @@ emulator.  * [Installation](http://github.com/beadsland/nosh/blob/master/doc/REA
 
 `superl` is relatively lightweight, and be included as a project
   dependency via `rebar.config`: 
-<blockquote> `{deps, [     {pose, ".*",       {git, "git://github.com/beadsland/pose", {branch, master}}}    ]}` </blockquote>
+<blockquote> `{deps, [     {superl, ".*",       {git, "git://github.com/beadsland/superl", {branch, master}}}    ]}` </blockquote>
  
 
 Following `rebar get-deps`, the style checker can be invoked easily 

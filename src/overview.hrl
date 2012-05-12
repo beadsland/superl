@@ -45,8 +45,8 @@
 %%
 %% <blockquote>
 %% `{deps, [
-%%    {pose, ".*",
-%%      {git, "git://github.com/beadsland/pose", {branch, master}}}
+%%    {superl, ".*",
+%%      {git, "git://github.com/beadsland/superl", {branch, master}}}
 %%   ]}'
 %% </blockquote>
 %%
