@@ -46,7 +46,7 @@ ONLINE	=	`$(PING) www.google.com 2>&1 >/dev/null; \
 HIDE_EDOC_WARN	=	grep -v "cannot handle URI.*edoc-info"
 SUCCINCT	=	grep -v "Entering directory" | grep -v "Leaving directory"
 
-ERL_PATH	= 	-pa ebin -pa deps/pose/ebin 
+ERL_PATH	= 	-pa ebin
 
 #
 # Build rules start

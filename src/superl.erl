@@ -92,7 +92,7 @@ start() ->
 -spec run(IO :: #std{}) -> ok | nogood.
 %
 run(IO) ->
-  process_flag(trap_exit, true),
+  ?INIT_POSE,
   ?STDOUT("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
 
   Src = filename:absname("src"),
