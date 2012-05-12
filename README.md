@@ -23,17 +23,23 @@ emulator.  * [Installation](http://github.com/beadsland/superl/blob/master/doc/R
 
 `superl` is relatively lightweight, and be included as a project
   dependency via `rebar.config`: 
-<blockquote> `{deps, [     {superl, ".*",       {git, "git://github.com/beadsland/superl", {branch, master}}}    ]}` </blockquote>
+<blockquote>
+  {deps, [
+     {superl, ".*",
+       {git, "git://github.com/beadsland/superl", {branch, master}}}
+    ]} </blockquote>
  
 
 Following `rebar get-deps`, the style checker can be invoked easily 
 from an erl command-line: 
-<blockquote> `> erl -pa deps/superl/ebin -s superl -s init stop` </blockquote>
+<blockquote>
+  > erl -pa deps/superl/ebin -s superl -s init stop </blockquote>
  
 
 It is recommended that the above be incorporated into a `good` rule 
 in project makefiles, resulting in an invocation of: 
-<blockquote> `> make good` </blockquote>
+<blockquote>
+  > make good </blockquote>
  
 
 ###<a name="Converting_Tabs">Converting Tabs</a>##
