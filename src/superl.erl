@@ -62,11 +62,16 @@
 %% Include files
 %%
 
--include_lib("kernel/include/file.hrl").
-
 %-define(debug, true).
 -include("pose/include/interface.hrl").
 
+-import(filename).
+-import(file).
+-import(lists).
+-import(io).
+-import(re).
+
+-include_lib("kernel/include/file.hrl").
 -include("macro.hrl").
 
 -record(lineinfo,
