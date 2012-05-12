@@ -9,11 +9,6 @@ __Version:__ 0.1.0
 
 __Authors:__ Beads D. Land-Trujillo (_web site:_ [`http://twitter.com/beadsland`](http://twitter.com/beadsland)).
 
-__<font color="red">To do</font>__
-<br></br>
-* <font color="red">add dependency soft-linking option to rebar</font>
-
-
 This is the superly good style checker for Erlang modules.
   See [`superl`](superl.md) module documentation for features and usage. 
 

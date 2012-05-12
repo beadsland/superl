@@ -52,7 +52,7 @@ ERL_PATH	= 	-pa ebin -pa deps/pose/ebin
 # Build rules start
 #
 
-all:	push-superl good
+all:	push good
 
 run:	current good
 
@@ -81,6 +81,6 @@ online:
 # Development rules
 #
 
-push-superl:	online
+push:	online
 	@if [ "$(DEV)" == yes -a "$(ONLINE)" == yes ]; \
 			then (git push origin master); fi

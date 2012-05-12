@@ -22,8 +22,6 @@
 %% -----------------------------------------------------------------------
 %% CDDL HEADER END
 
-%% @todo add dependency soft-linking option to rebar
-
 %% @doc This is the superly good style checker for Erlang modules.
 %% See {@link superl} module documentation for features and usage.
 %%
