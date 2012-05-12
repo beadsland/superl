@@ -44,9 +44,18 @@
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
-%% @version 0.1.5
+% BEGIN NOSH PACKAGE PATTERN
+-ifndef(package).
 -module(superl).
--version("0.1.5").
+-package(default).
+-else.
+-module(?package.superl).
+-package(?package).
+-endif.
+% END NOSH PACKAGE PATTERN
+
+%% @version 0.1.6
+-version("0.1.6").
 
 %%
 %% Include files
