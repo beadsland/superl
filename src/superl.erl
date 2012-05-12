@@ -44,17 +44,20 @@
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
-%% @version 0.1.4
+%% @version 0.1.5
 -module(superl).
--version("0.1.4").
+-version("0.1.5").
 
 %%
 %% Include files
 %%
 
--include("macro.hrl").
-
 -include_lib("kernel/include/file.hrl").
+
+%-define(debug, true).
+-include("pose/include/interface.hrl").
+
+-include("macro.hrl").
 
 -record(lineinfo,
         {	tabs, max, total, bigfunc, curfunc, hlines, clines, specs } ).
@@ -62,19 +65,35 @@
 %%
 %% Exported Functions
 %%
--export([start/0]).
+
+% API functions
+-export([start/0, run/1]).
+
+% Qualified functions
+-export([loop/2]).
 
 %%
 %% API Functions
 %%
 
-%% @doc Runs superly good style check on Erlang source and header files
-%% in `src/' and `include/' directories of current project.  All results
-%% are written to standard output.
+%% @doc Start superly good style check as a blocking function.
+%% All results are written to standard output.
 %% @end
--spec start() -> ok.
+-spec start() -> ok | nogood.
+%
 start() ->
-  io:format("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
+  IO = ?IO(self()),
+  RunPid = spawn_link(?MODULE, run, [IO]),
+  ?MODULE:loop(IO, RunPid).
+
+%% @doc Start superly good style check as a
+%% <a href="http://github.com/beadsland/pose"><cmd>pose</cmd></a> process.
+%% @end
+-spec run(IO :: #std{}) -> ok | nogood.
+%
+run(IO) ->
+  process_flag(trap_exit, true),
+  ?STDOUT("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
 
   Src = filename:absname("src"),
   Inc = filename:absname("include"),
@@ -88,21 +107,40 @@ start() ->
 
   Sorted = lists:sort(fun more_recently_modified/2, SrcComp ++ IncComp),
 
-  case review(Sorted) of
-    good	-> io:format("All good!\n");
-    nogood	-> io:format("Not yet superly good.\n")
-  end,
-
-  ok.
+  case review(IO, Sorted) of
+    good	-> ?STDOUT("All good!\n"), exit(ok);
+    nogood	-> ?STDOUT("Not yet superly good.\n"), exit(nogood)
+  end.
 
 %%
 %% Local Functions
 %%
 
-
 % @hidden Export to allow for hotswap.
-%loop(_IO) ->
-%  true.
+loop(IO, RunPid) ->
+  receive
+    {purging, _Pid, _Mod}       -> ?MODULE:loop(IO, RunPid);
+    {'EXIT', RunPid, Reason}    -> Reason;
+    {MsgTag, RunPid, Line}      -> do_output(MsgTag, Line),
+                                   ?MODULE:loop(IO, RunPid);
+    Noise                       -> do_noise(Noise),
+                                   ?MODULE:loop(IO, RunPid)
+  end.
+
+% Handle stderr and stdout messages.
+do_output(MsgTag, Output) ->
+  case MsgTag of
+    stdout  -> io:format("~s", [Output]);
+    erlout  -> io:format("~p: data: ~p~n", [?MODULE, Output]);
+    erlerr  -> Erlerr = ?FORMAT_ERLERR(Output),
+               io:format(standard_error, "** ~s~n", [Erlerr]);
+    stderr  -> io:format(standard_error, "** ~s", [Output]);
+    debug   -> io:format(standard_error, "-- ~s", [Output])
+  end.
+
+% Handle message queue noise.
+do_noise(Noise) ->
+  io:format(standard_error, "noise: ~p ~p~n", [Noise, self()]).
 
 more_recently_modified(File1, File2) ->
   {ok, FileInfo1} = file:read_file_info(File1),
@@ -111,20 +149,20 @@ more_recently_modified(File1, File2) ->
      true													-> false
   end.
 
-review([]) -> good;
-review([Head | Tail]) ->
-  TailResult = review(Tail),
-  case test_lines(Head) of
+review(_IO, []) -> good;
+review(IO, [Head | Tail]) ->
+  TailResult = review(IO, Tail),
+  case test_lines(IO, Head) of
     nogood	-> nogood;
     good	-> TailResult
   end.
 
-test_lines(File) ->
+test_lines(IO, File) ->
   {ok, FileID} = file:open(File, [read]),
   {ok, MP} = re:compile("^(.*)\.[he]rl$"),
   {match, [Module]} = re:run(File, MP, [{capture, [1], list}]),
   Info = line_info(FileID),
-  report_results(Module, Info).
+  report_results(IO, Module, Info).
 
 -define(WARN_TABS, "~s: avoid leading tabs (convert to spaces)~n").
 -define(WARN_LINES, "~s: avoid long lines (~p char line found)~n").
@@ -132,18 +170,18 @@ test_lines(File) ->
 -define(WARN_FUNC, "~s: avoid long functions (~p line function found)~n").
 -define(WARN_DOC, "~s: document code (~p% comment-to-code ratio found)~n").
 
-report_results(Module, Info) ->
+report_results(IO, Module, Info) ->
   Ratio = round(Info#lineinfo.hlines / (Info#lineinfo.clines+1) * 100),
   if Info#lineinfo.tabs == true ->
-       io:format(?WARN_TABS, [Module]), nogood;
+       ?STDOUT(?WARN_TABS, [Module]), nogood;
      Info#lineinfo.max > 80 ->
-       io:format(?WARN_LINES, [Module, Info#lineinfo.max]), nogood;
+       ?STDOUT(?WARN_LINES, [Module, Info#lineinfo.max]), nogood;
      Info#lineinfo.total > 400 ->
-       io:format(?WARN_MODULES, [Module, Info#lineinfo.total]), nogood;
+       ?STDOUT(?WARN_MODULES, [Module, Info#lineinfo.total]), nogood;
      Info#lineinfo.bigfunc > 20 ->
-       io:format(?WARN_FUNC, [Module, Info#lineinfo.bigfunc]), nogood;
+       ?STDOUT(?WARN_FUNC, [Module, Info#lineinfo.bigfunc]), nogood;
      Ratio < 25 ->
-       io:format(?WARN_DOC, [Module, Ratio]), nogood;
+       ?STDOUT(?WARN_DOC, [Module, Ratio]), nogood;
      true -> good
   end.
 

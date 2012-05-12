@@ -46,6 +46,8 @@ ONLINE	=	`$(PING) www.google.com 2>&1 >/dev/null; \
 HIDE_EDOC_WARN	=	grep -v "cannot handle URI.*edoc-info"
 SUCCINCT	=	grep -v "Entering directory" | grep -v "Leaving directory"
 
+ERL_PATH	= 	-pa ebin -pa deps/pose/ebin 
+
 #
 # Build rules start
 #
@@ -55,7 +57,7 @@ all:	push-superl good
 run:	current good
 
 good:	compile
-	@erl -pa ebin -noshell -s superl -s init stop
+	@erl $(ERL_PATH) -i deps -noshell -s superl -s init stop
 		
 compile:
 	@rebar compile doc | $(HIDE_EDOC_WARN) | $(SUCCINCT)

@@ -15,7 +15,11 @@ __<font color="red">To do</font>__
 
 
 This is the superly good style checker for Erlang modules.
-  See [`superl`](superl.md) module documentation for features and usage.  * [Installation](#Installation)
+  See [`superl`](superl.md) module documentation for features and usage. 
+
+The `superl` module includes the [`pose`](http://github.com/beadsland/pose) interface,
+  allowing it to be run as a command in the [`nosh`](http://github.com/beadsland/nosh) Bourne shell 
+emulator.  * [Installation](#Installation)
  * [Converting Tabs](#Converting_Tabs)
   
 
@@ -24,18 +28,18 @@ This is the superly good style checker for Erlang modules.
 
 `superl` is relatively lightweight, and be included as a project
   dependency via `rebar.config`: 
-
-`{deps, [     {pose, ".*",       {git, "git://github.com/beadsland/pose", {branch, master}}}    ]}` 
+<blockquote> `{deps, [     {pose, ".*",       {git, "git://github.com/beadsland/pose", {branch, master}}}    ]}` </blockquote>
+ 
 
 Following `rebar get-deps`, the style checker can be invoked easily 
 from an erl command-line: 
-
-`> erl -pa deps/superl/ebin -s superl -s init stop` 
+<blockquote> `> erl -pa deps/superl/ebin -s superl -s init stop` </blockquote>
+ 
 
 It is recommended that the above be incorporated into a `good` rule 
 in project makefiles, resulting in an invocation of: 
-
-`> make good` 
+<blockquote> `> make good` </blockquote>
+ 
 
 ###<a name="Converting_Tabs">Converting Tabs</a>##
  

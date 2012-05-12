@@ -12,7 +12,7 @@ This is the superly good style checker for Erlang modules.
 
 Copyright (c) 2012 Beads D. Land-Trujillo
 
-__Version:__ 0.1.3
+__Version:__ 0.1.5
 
 __Authors:__ Beads D. Land-Trujillo (_web site:_ [`http://twitter.com/beadsland`](http://twitter.com/beadsland)).
 
@@ -26,7 +26,6 @@ Most Common Mistakes](http://www.erlang.se/doc/programming_rules..md#REF66257) s
 
 __<font color="red">To do</font>__
 <br></br>
-* <font color="red">add nosh executable behaviour (not yet defined)</font>
 * <font color="red">check for bad return types (rewrite as edoc doclet??)</font>
 * <font color="red">check for deep nesting (largely dealt with by line/func length)</font>
 * <font color="red">simple variable naming tests</font>
@@ -41,27 +40,42 @@ in the most recently updated files are the first identified.<a name="index"></a>
 ##Function Index##
 
 
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Runs superly good style check on Erlang source and header files
-in <code>src/</code> and <code>include/</code> directories of current project.</td></tr></table>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#run-1">run/1</a></td><td>Start superly good style check as a
+<a href="http://github.com/beadsland/pose"><cmd>pose</cmd></a> process.</td></tr><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Start superly good style check as a blocking function.</td></tr></table>
 
 
 <a name="functions"></a>
 
 ##Function Details##
 
-<a name="start-0"></a>
+<a name="run-1"></a>
+
+###run/1##
+
+
+
+
+<pre>run(IO::#std{}) -&gt; ok | nogood</pre>
+<br></br>
+
+
+
+
+Start superly good style check as a
+[
+<cmd>pose</cmd>
+](http://github.com/beadsland/pose) process.<a name="start-0"></a>
 
 ###start/0##
 
 
 
 
-<pre>start() -&gt; ok</pre>
+<pre>start() -&gt; ok | nogood</pre>
 <br></br>
 
 
 
 
-Runs superly good style check on Erlang source and header files
-in `src/` and `include/` directories of current project.  All results
-are written to standard output.
+Start superly good style check as a blocking function.
+All results are written to standard output.
