@@ -15,12 +15,12 @@ __<font color="red">To do</font>__
 
 
 This is the superly good style checker for Erlang modules.
-  See [`superl`](http://github.com/beadsland/nosh/blob/master/doc/superl.md) module documentation for features and usage. 
+  See [`superl`](http://github.com/beadsland/superl/blob/master/doc/superl.md) module documentation for features and usage. 
 
 The `superl` module includes the [`pose`](http://github.com/beadsland/pose) interface,
   allowing it to be run as a command in the [`nosh`](http://github.com/beadsland/nosh) Bourne shell 
-emulator.  * [Installation](http://github.com/beadsland/nosh/blob/master/doc/README.md#Installation)
- * [Converting Tabs](http://github.com/beadsland/nosh/blob/master/doc/README.md#Converting_Tabs)
+emulator.  * [Installation](http://github.com/beadsland/superl/blob/master/doc/README.md#Installation)
+ * [Converting Tabs](http://github.com/beadsland/superl/blob/master/doc/README.md#Converting_Tabs)
   
 
 ###<a name="Installation">Installation</a>##
@@ -56,5 +56,5 @@ development environments. If using the Eclipse IDE, one way to handle this is wi
 
 
 <table width="100%" border="0" summary="list of modules">
-<tr><td><a href="http://github.com/beadsland/nosh/blob/master/doc/superl.md" class="module">superl</a></td></tr></table>
+<tr><td><a href="http://github.com/beadsland/superl/blob/master/doc/superl.md" class="module">superl</a></td></tr></table>
 
