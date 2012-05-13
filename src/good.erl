@@ -26,15 +26,17 @@
 %% @author Beads D. Land-Trujillo [http://twitter.com/beadsland]
 %% @copyright 2012 Beads D. Land-Trujillo
 
-% BEGIN NOSH PACKAGE PATTERN
+-define(module, good).
+
+% BEGIN POSE PACKAGE PATTERN
 -ifndef(package).
--module(good).
+-module(?module).
 -package(default).
 -else.
--module(?package.good).
+-module(?package.?module).
 -package(?package).
 -endif.
-% END NOSH PACKAGE PATTERN
+% END POSE PACKAGE PATTERN
 
 %%
 %% Include files

@@ -46,15 +46,17 @@
 
 %% @version 0.1.6
 
-% BEGIN NOSH PACKAGE PATTERN
+-define(module, superl).
+
+% BEGIN POSE PACKAGE PATTERN
 -ifndef(package).
--module(superl).
+-module(?module).
 -package(default).
 -else.
--module(?package.superl).
+-module(?package.?module).
 -package(?package).
 -endif.
-% END NOSH PACKAGE PATTERN
+% END POSE PACKAGE PATTERN
 
 -version("0.1.6").
 
