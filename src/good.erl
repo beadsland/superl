@@ -54,7 +54,11 @@
 
 %% @equiv superl:run(IO)
 -spec run(IO :: #std{}) -> no_return().
-run(IO) -> superl:run(IO).
+run(IO) ->
+  case pose_code:load(superl) of
+    {module, Module}    -> Module:run(IO);
+    {error, What}       -> ?STDERR({superl, What})
+  end.
 
 %%
 %% Local Functions
