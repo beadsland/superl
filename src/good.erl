@@ -57,6 +57,7 @@
 %% @equiv superl:run(IO)
 -spec run(IO :: #std{}) -> no_return().
 run(IO) ->
+  ?INIT_POSE,
   case pose_code:load(superl) of
     {module, Module}    -> Module:run(IO);
     {error, What}       -> ?STDERR({superl, What})
