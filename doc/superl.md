@@ -1,6 +1,6 @@
 
 
-#Module superl#
+#Module ?module#
 
 * [Description](#description)
 * [Function Index](#index)
@@ -11,7 +11,7 @@ This is the superly good style checker for Erlang modules.
 
 Copyright (c) 2012 Beads D. Land-Trujillo
 
-__Version:__ 0.1.5
+__Version:__ 0.1.6
 
 __Authors:__ Beads D. Land-Trujillo (_web site:_ [`http://twitter.com/beadsland`](http://twitter.com/beadsland)).
 
@@ -43,27 +43,25 @@ in the most recently updated files are the first identified.<a name="index"></a>
 ##Function Index##
 
 
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#run-1">run/1</a></td><td>Start superly good style check as a
-<a href="http://github.com/beadsland/pose"><cmd>pose</cmd></a> process.</td></tr><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Start superly good style check as a blocking function.</td></tr></table>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#run-3">run/3</a></td><td>Start superly good style check as a
+<a href="http://github.com/beadsland/pose">pose</a> process.</td></tr><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Start superly good style check as a blocking function.</td></tr></table>
 
 
 <a name="functions"></a>
 
 ##Function Details##
 
-<a name="run-1"></a>
+<a name="run-3"></a>
 
-###run/1##
+###run/3##
 
 
-<pre>run(IO::#std{}) -&gt; ok | nogood</pre>
+<pre>run(IO::#std{}, ARG::#arg{}, ENV::#env{}) -&gt; no_return()</pre>
 <br></br>
 
 
 Start superly good style check as a
-[
-<cmd>pose</cmd>
-](http://github.com/beadsland/pose) process.<a name="start-0"></a>
+[pose](http://github.com/beadsland/pose) process.<a name="start-0"></a>
 
 ###start/0##
 

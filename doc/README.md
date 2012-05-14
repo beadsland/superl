@@ -23,25 +23,19 @@ emulator.
 
 
 `superl` is relatively lightweight, and be included as a project
-  dependency via `rebar.config`:
-<blockquote>
+  dependency via `rebar.config`:<pre>
   {deps, [
      {superl, ".*",
        {git, "git://github.com/beadsland/superl", {branch, master}}}
-    ]}</blockquote>
-
+    ]}</pre>
 
 Following `rebar get-deps`, the style checker can be invoked easily
-from an erl command-line:
-<blockquote>
-  > erl -pa deps/superl/ebin -s superl -s init stop</blockquote>
-
+from an erl command-line:<pre>
+  > erl -pa deps/superl/ebin -s superl -s init stop</pre>
 
 It is recommended that the above be incorporated into a `good` rule
-in project makefiles, resulting in an invocation of:
-<blockquote>
-  > make good</blockquote>
-
+in project makefiles, resulting in an invocation of:<pre>
+  > make good</pre>
 
 ###<a name="Converting_Tabs">Converting Tabs</a>##
 
@@ -53,10 +47,3 @@ converted to spaces to ensure stylistic indentation is portable across
 development environments.If using the Eclipse IDE, one way to handle this is with the AnyEdit
   Tools plugin [`http://andrei.gmxhome.de/anyedit/`](http://andrei.gmxhome.de/anyedit/), available in the
   Eclipse Marketplace.
-
-##Modules##
-
-
-<table width="100%" border="0" summary="list of modules">
-<tr><td><a href="superl.md" class="module">superl</a></td></tr></table>
-
