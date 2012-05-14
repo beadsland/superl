@@ -105,7 +105,7 @@ start() ->
   ?MODULE:loop(IO, RunPid).
 
 %% @doc Start superly good style check as a
-%% <a href="http://github.com/beadsland/pose"><cmd>pose</cmd></a> process.
+%% <a href="http://github.com/beadsland/pose">pose</a> process.
 %% @end
 -spec run(IO :: #std{}, ARG :: #arg{}, ENV :: #env{}) -> no_return().
 %
