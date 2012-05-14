@@ -109,7 +109,7 @@ start() ->
 %% @end
 -spec run(IO :: #std{}, ARG :: #arg{}, ENV :: #env{}) -> no_return().
 %
-run(IO, ARG, ENV) ->
+run(IO, _ARG, _ENV) ->
   ?INIT_POSE,
   ?STDOUT("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
 
