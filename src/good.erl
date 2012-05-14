@@ -50,18 +50,18 @@
 %%
 %% Exported Functions
 %%
--export([run/1]).
+-export([run/3]).
 
 %%
 %% API Functions
 %%
 
 %% @equiv superl:run(IO)
--spec run(IO :: #std{}) -> no_return().
-run(IO) ->
+-spec run(IO :: #std{}, ARG :: #arg{}, ENV :: #env{}) -> no_return().
+run(IO, ARG, ENV) ->
   ?INIT_POSE,
   case pose_code:load(superl) of
-    {module, Module}    -> Module:run(IO, ?ARG(?MODULE), ?ENV);
+    {module, Module}    -> Module:run(IO, ARG, ENV);
     {error, What}       -> ?STDERR({superl, What})
   end.
 
