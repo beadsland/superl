@@ -61,7 +61,7 @@
 run(IO) ->
   ?INIT_POSE,
   case pose_code:load(superl) of
-    {module, Module}    -> Module:run(IO);
+    {module, Module}    -> Module:run(IO, ?ARG(?MODULE), ?ENV);
     {error, What}       -> ?STDERR({superl, What})
   end.
 

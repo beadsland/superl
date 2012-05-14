@@ -85,7 +85,7 @@
 %%
 
 % API functions
--export([start/0, run/1]).
+-export([start/0, run/3]).
 
 % Qualified functions
 -export([loop/2]).
@@ -101,15 +101,15 @@
 %
 start() ->
   IO = ?IO(self()),
-  RunPid = spawn_link(?MODULE, run, [IO]),
+  RunPid = spawn_link(?MODULE, run, [IO, ?ARG(?MODULE), ?ENV]),
   ?MODULE:loop(IO, RunPid).
 
 %% @doc Start superly good style check as a
 %% <a href="http://github.com/beadsland/pose"><cmd>pose</cmd></a> process.
 %% @end
--spec run(IO :: #std{}) -> no_return().
+-spec run(IO :: #std{}, ARG :: #arg{}, ENV :: #env{}) -> no_return().
 %
-run(IO) ->
+run(IO, ARG, ENV) ->
   ?INIT_POSE,
   ?STDOUT("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
 
