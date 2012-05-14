@@ -41,26 +41,26 @@
 %% `superl' is relatively lightweight, and be included as a project
 %% dependency via `rebar.config':
 %%
-%% <blockquote>
+%% <pre>
 %% {deps, [
 %%    {superl, ".*",
 %%      {git, "git://github.com/beadsland/superl", {branch, master}}}
 %%   ]}
-%% </blockquote>
+%% </pre>
 %%
 %% Following `rebar get-deps', the style checker can be invoked easily
 %% from an erl command-line:
 %%
-%% <blockquote>
+%% <pre>
 %% > erl -pa deps/superl/ebin -s superl -s init stop
-%% </blockquote>
+%% </pre>
 %%
 %% It is recommended that the above be incorporated into a `good' rule
 %% in project makefiles, resulting in an invocation of:
 %%
-%% <blockquote>
+%% <pre>
 %% > make good
-%% </blockquote>
+%% </pre>
 %%
 %% ==Converting Tabs==
 %%
