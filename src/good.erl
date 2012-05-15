@@ -56,8 +56,8 @@
 %% API Functions
 %%
 
-%% @equiv superl:run(IO)
 -spec run(IO :: #std{}, ARG :: #arg{}, ENV :: #env{}) -> no_return().
+%% @equiv superl:run(IO)
 run(IO, ARG, ENV) ->
   ?INIT_POSE,
   case pose_code:load(superl) of

@@ -94,21 +94,19 @@
 %% API Functions
 %%
 
+-spec start() -> ok | nogood.
 %% @doc Start superly good style check as a blocking function.
 %% All results are written to standard output.
 %% @end
--spec start() -> ok | nogood.
-%
 start() ->
   IO = ?IO(self()),
   RunPid = spawn_link(?MODULE, run, [IO, ?ARG(?MODULE), ?ENV]),
   ?MODULE:loop(IO, RunPid).
 
+-spec run(IO :: #std{}, ARG :: #arg{}, ENV :: #env{}) -> no_return().
 %% @doc Start superly good style check as a
 %% <a href="http://github.com/beadsland/pose">pose</a> process.
 %% @end
--spec run(IO :: #std{}, ARG :: #arg{}, ENV :: #env{}) -> no_return().
-%
 run(IO, _ARG, _ENV) ->
   ?INIT_POSE,
   ?STDOUT("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
