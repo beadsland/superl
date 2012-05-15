@@ -30,12 +30,10 @@ emulator.
     ]}</pre>
 
 Following `rebar get-deps`, the style checker can be invoked easily
-from an erl command-line:<pre>
-  > erl -pa deps/superl/ebin -s superl -s init stop</pre>
+from an erl command-line:<pre>&gt; erl -pa deps/superl/ebin -s superl -s init stop</pre>
 
 It is recommended that the above be incorporated into a `good` rule
-in project makefiles, resulting in an invocation of:<pre>
-  > make good</pre>
+in project makefiles, resulting in an invocation of:<pre>&gt; make good</pre>
 
 ###<a name="Converting_Tabs">Converting Tabs</a>##
 

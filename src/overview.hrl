@@ -52,14 +52,14 @@
 %% from an erl command-line:
 %%
 %% <pre>
-%% > erl -pa deps/superl/ebin -s superl -s init stop
+%% &amp;gt; erl -pa deps/superl/ebin -s superl -s init stop
 %% </pre>
 %%
 %% It is recommended that the above be incorporated into a `good' rule
 %% in project makefiles, resulting in an invocation of:
 %%
 %% <pre>
-%% > make good
+%% &amp;gt; make good
 %% </pre>
 %%
 %% ==Converting Tabs==
