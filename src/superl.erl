@@ -44,7 +44,7 @@
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
-%% @version 0.1.6
+%% @version 0.1.7
 
 -define(module, superl).
 
@@ -58,7 +58,7 @@
 -endif.
 % END POSE PACKAGE PATTERN
 
--version("0.1.6").
+-version("0.1.7").
 
 %%
 %% Include files
@@ -175,9 +175,9 @@ review(IO, [Head | Tail]) ->
 
 test_lines(IO, File) ->
   {ok, FileID} = file:open(File, [read]),
-  {ok, MP} = re:compile("^(.*)\.[he]rl$"),
-  {match, [Module]} = re:run(File, MP, [{capture, [1], list}]),
   Info = line_info(FileID),
+  {ok, MP} = re:compile("([^\\/]+)\\.[he]rl$"),
+  {match, [Module]} = re:run(File, MP, [{capture, [1], list}]),
   report_results(IO, Module, Info).
 
 -define(WARN_TABS, "~s: avoid leading tabs (convert to spaces)~n").
