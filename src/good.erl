@@ -45,7 +45,7 @@
 %-define(debug, true).
 -include("pose/include/interface.hrl").
 
--import(pose_code).
+-import(pose_command).
 
 %%
 %% Exported Functions
