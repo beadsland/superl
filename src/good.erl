@@ -60,9 +60,11 @@
 %% @equiv superl:run(IO)
 run(IO, ARG, ENV) ->
   ?INIT_POSE,
-  case pose_code:load(superl) of
-    {module, Module}    -> Module:run(IO, ARG, ENV);
-    {error, What}       -> ?STDERR({superl, What})
+  case pose_command:load(superl) of
+    {module, Module, Warnings}    -> pose:load_warn(IO, superl, Warnings),
+                                     Module:run(IO, ARG, ENV);
+    {error, What, Warnings}       -> pose:load_warn(IO, superl, Warnings),
+                                     ?STDERR({superl, What})
   end.
 
 %%
