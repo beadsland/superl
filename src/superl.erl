@@ -30,18 +30,21 @@
 %% in the most recently updated files are the first identified.
 %%
 %% In addition to identifying issues with leading tabs, long lines, 
-%% long files, and long modules, `superl' also looks for a high 
-%% (at least 40%) comment-to-code ratio (white space is not counted)--with 
-%% the expectation that much of this will be edoc comments--and good 
-%% comment distribution.  
-%% 
-%% In the last case, the desire is to have at least one comment line at 
-%% the start of every function, if only to break up code visually in 
-%% color-coded IDEs.  Such one-liners can also help in following the flow
-%% of complex functionality, when a sequence of progressively-higher arity
-%% functions serve to keep `if' and `case' logic from being nested
-%% within a single function.
+%% long files, and long modules, `superl' also looks for good commenting.
 %%
+%% A rule of thumb for good code-to-comments is a ratio of 1:4 (not
+%% counting white space).  However, given the importance of inline `edoc' 
+%% comments in Erlang modules, `superl' currently reports any file with 
+%% less than a 40% ratio. 
+%%
+%% Similarly, `edoc' looks for good comment distribution, in that on
+%% average, longer functions are expected to have at least one comment
+%% line as a header.  This comment line serves two functions.  First,
+%% it helps to break up code visually in color-coded IDEs.  Second, it
+%% provides an opportunity to narrate multi-arity progressions of 
+%% functions, where such functions often represent several steps of the
+%% same complex operation, broken up to avoid nesting `if' and `case'
+%% clauses within a single over-long function. 
 %% @end
 %% @reference Rudimentary checks for
 %% <a href="http://www.erlang.se/doc/programming_rules.shtml#REF11301">
