@@ -173,7 +173,7 @@ report_results(IO, Module, Info) ->
        ?STDOUT(?WARN_FUNC, [Module, Info#lineinfo.bigfunc]), nogood;
      Ratio < 40                     ->
        ?STDOUT(?WARN_DOC, [Module, Ratio]), nogood;
-     Info#lineinfo.maxspan > 25       ->
+     Info#lineinfo.maxspan > 30     ->
        ?STDOUT(?WARN_SPAN, [Module, Info#lineinfo.maxspan]), nogood;
      true -> good
   end.
