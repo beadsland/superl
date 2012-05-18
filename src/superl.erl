@@ -24,10 +24,24 @@
 
 %% @doc This is the superly good style checker for Erlang modules.
 %%
-%% Checks all modules and header files in a project src directory for
-%% good style, and reports the first issue it finds in each file.
+%% Checks all modules and header files in an OTP project for good style, 
+%% and reports the highest priority issue found in each file.
 %% Files are sorted by last modification date, such that the issues
 %% in the most recently updated files are the first identified.
+%%
+%% In addition to identifying issues with leading tabs, long lines, 
+%% long files, and long modules, `superl' also looks for a high 
+%% (at least 40%) comment-to-code ratio (white space is not counted)--with 
+%% the expectation that much of this will be edoc comments--and good 
+%% comment distribution.  
+%% 
+%% In the last case, the desire is to have at least one comment line at 
+%% the start of every function, if only to break up code visually in 
+%% color-coded IDEs.  Such one-liners can also help in following the flow
+%% of complex functionality, when a sequence of progressively-higher arity
+%% functions serve to keep `if' and `case' logic from being nested
+%% within a single function.
+%%
 %% @end
 %% @reference Rudimentary checks for
 %% <a href="http://www.erlang.se/doc/programming_rules.shtml#REF11301">
