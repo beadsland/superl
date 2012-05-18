@@ -35,10 +35,33 @@ __<font color="red">To do</font>__
 ##Description##
 
 
-Checks all modules and header files in a project src directory for
-good style, and reports the first issue it finds in each file.
+
+
+Checks all modules and header files in an OTP project for good style,
+and reports the highest priority issue found in each file.
 Files are sorted by last modification date, such that the issues
-in the most recently updated files are the first identified.<a name="index"></a>
+in the most recently updated files are the first identified.
+
+
+
+In addition to identifying issues with leading tabs, long lines,
+long files, and long modules, `superl` also looks for good commenting.
+
+
+
+A rule of thumb for good code-to-comments is a ratio of 1:4 (not
+counting white space).  However, given the importance of inline `edoc`
+comments in Erlang modules, `superl` currently reports any file with
+less than a 40% ratio.
+
+Similarly, `edoc` looks for good comment distribution, in that on
+average, longer functions are expected to have at least one comment
+line as a header.  This comment line serves two functions.  First,
+it helps to break up code visually in color-coded IDEs.  Second, it
+provides an opportunity to narrate multi-arity progressions of
+functions, where such functions often represent several steps of the
+same complex operation, broken up to avoid nesting `if` and `case`
+clauses within a single over-long function.<a name="index"></a>
 
 ##Function Index##
 
