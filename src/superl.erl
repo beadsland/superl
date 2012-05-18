@@ -24,27 +24,27 @@
 
 %% @doc This is the superly good style checker for Erlang modules.
 %%
-%% Checks all modules and header files in an OTP project for good style, 
+%% Checks all modules and header files in an OTP project for good style,
 %% and reports the highest priority issue found in each file.
 %% Files are sorted by last modification date, such that the issues
 %% in the most recently updated files are the first identified.
 %%
-%% In addition to identifying issues with leading tabs, long lines, 
+%% In addition to identifying issues with leading tabs, long lines,
 %% long files, and long modules, `superl' also looks for good commenting.
 %%
 %% A rule of thumb for good code-to-comments is a ratio of 1:4 (not
-%% counting white space).  However, given the importance of inline `edoc' 
-%% comments in Erlang modules, `superl' currently reports any file with 
-%% less than a 40% ratio. 
+%% counting white space).  However, given the importance of inline `edoc'
+%% comments in Erlang modules, `superl' currently reports any file with
+%% less than a 40% ratio.
 %%
 %% Similarly, `edoc' looks for good comment distribution, in that on
 %% average, longer functions are expected to have at least one comment
 %% line as a header.  This comment line serves two functions.  First,
 %% it helps to break up code visually in color-coded IDEs.  Second, it
-%% provides an opportunity to narrate multi-arity progressions of 
+%% provides an opportunity to narrate multi-arity progressions of
 %% functions, where such functions often represent several steps of the
 %% same complex operation, broken up to avoid nesting `if' and `case'
-%% clauses within a single over-long function. 
+%% clauses within a single over-long function.
 %% @end
 %% @reference Rudimentary checks for
 %% <a href="http://www.erlang.se/doc/programming_rules.shtml#REF11301">
@@ -95,7 +95,8 @@
 -include("macro.hrl").
 
 -record(lineinfo,
-        { tabs, max, total, bigfunc, curfunc, hlines, clines, curspan, maxspan } ).
+        {   tabs, max, total, bigfunc, curfunc,
+            hlines, clines, curspan, maxspan } ).
 
 %%
 %% Exported Functions
@@ -149,38 +150,7 @@ run(IO, _ARG, _ENV) ->
 %% Local Functions
 %%
 
-% @hidden Export to allow for hotswap.
-loop(IO, RunPid) ->
-  receive
-    {purging, _Pid, _Mod}       -> ?MODULE:loop(IO, RunPid);
-    {'EXIT', RunPid, Reason}    -> Reason;
-    {MsgTag, RunPid, Line}      -> do_output(MsgTag, Line),
-                                   ?MODULE:loop(IO, RunPid);
-    Noise                       -> do_noise(Noise),
-                                   ?MODULE:loop(IO, RunPid)
-  end.
 
-% Handle stderr and stdout messages.
-do_output(MsgTag, Output) ->
-  case MsgTag of
-    stdout  -> io:format("~s", [Output]);
-    erlout  -> io:format("~p: data: ~p~n", [?MODULE, Output]);
-    erlerr  -> Erlerr = ?FORMAT_ERLERR(Output),
-               io:format(standard_error, "** ~s~n", [Erlerr]);
-    stderr  -> io:format(standard_error, "** ~s", [Output]);
-    debug   -> io:format(standard_error, "-- ~s", [Output])
-  end.
-
-% Handle message queue noise.
-do_noise(Noise) ->
-  io:format(standard_error, "noise: ~p ~p~n", [Noise, self()]).
-
-more_recently_modified(File1, File2) ->
-  {ok, FileInfo1} = file:read_file_info(File1),
-  {ok, FileInfo2} = file:read_file_info(File2),
-  if FileInfo1#file_info.mtime > FileInfo2#file_info.mtime 	-> true;
-     true													-> false
-  end.
 
 review(_IO, []) -> good;
 review(IO, [Head | Tail]) ->
@@ -282,3 +252,44 @@ function_length(Count, Line) ->
             _Else				-> {Count + 1, code}
            end
   end.
+
+%%%
+% File comparisons
+%%%
+
+more_recently_modified(File1, File2) ->
+  {ok, FileInfo1} = file:read_file_info(File1),
+  {ok, FileInfo2} = file:read_file_info(File2),
+  if FileInfo1#file_info.mtime > FileInfo2#file_info.mtime  -> true;
+     true                                                   -> false
+  end.
+
+%%%
+% Start loop
+%%% 
+
+% @hidden Export to allow for hotswap.
+loop(IO, RunPid) ->
+  receive
+    {purging, _Pid, _Mod}       -> ?MODULE:loop(IO, RunPid);
+    {'EXIT', RunPid, Reason}    -> Reason;
+    {MsgTag, RunPid, Line}      -> do_output(MsgTag, Line),
+                                   ?MODULE:loop(IO, RunPid);
+    Noise                       -> do_noise(Noise),
+                                   ?MODULE:loop(IO, RunPid)
+  end.
+
+% Handle stderr and stdout messages.
+do_output(MsgTag, Output) ->
+  case MsgTag of
+    stdout  -> io:format("~s", [Output]);
+    erlout  -> io:format("~p: data: ~p~n", [?MODULE, Output]);
+    erlerr  -> Erlerr = ?FORMAT_ERLERR(Output),
+               io:format(standard_error, "** ~s~n", [Erlerr]);
+    stderr  -> io:format(standard_error, "** ~s", [Output]);
+    debug   -> io:format(standard_error, "-- ~s", [Output])
+  end.
+
+% Handle message queue noise.
+do_noise(Noise) ->
+  io:format(standard_error, "noise: ~p ~p~n", [Noise, self()]).
