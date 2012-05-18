@@ -150,22 +150,9 @@ run(IO, _ARG, _ENV) ->
 %% Local Functions
 %%
 
-
-
-review(_IO, []) -> good;
-review(IO, [Head | Tail]) ->
-  TailResult = review(IO, Tail),
-  case test_lines(IO, Head) of
-    nogood	-> nogood;
-    good	-> TailResult
-  end.
-
-test_lines(IO, File) ->
-  {ok, FileID} = file:open(File, [read]),
-  Info = line_info(FileID),
-  {ok, MP} = re:compile("([^\\/]+)\\.[he]rl$"),
-  {match, [Module]} = re:run(File, MP, [{capture, [1], list}]),
-  report_results(IO, Module, Info).
+%%%
+% Report results
+%%%
 
 -define(WARN_TABS, "~s: avoid leading tabs (convert to spaces)~n").
 -define(WARN_LINES, "~s: avoid long lines (~p char line found)~n").
@@ -191,6 +178,28 @@ report_results(IO, Module, Info) ->
      true -> good
   end.
 
+%%%
+% Do analysis
+%%%
+
+% Iterate over files.
+review(_IO, []) -> good;
+review(IO, [Head | Tail]) ->
+  TailResult = review(IO, Tail),
+  case test_lines(IO, Head) of
+    nogood	-> nogood;
+    good	-> TailResult
+  end.
+
+% Analyze a specific file.
+test_lines(IO, File) ->
+  {ok, FileID} = file:open(File, [read]),
+  Info = line_info(FileID),
+  {ok, MP} = re:compile("([^\\/]+)\\.[he]rl$"),
+  {match, [Module]} = re:run(File, MP, [{capture, [1], list}]),
+  report_results(IO, Module, Info).
+
+% Open a file to analyze same.
 line_info(FileID) ->
   case file:read_line(FileID) of
     eof			-> #lineinfo{	tabs = false,
@@ -205,6 +214,7 @@ line_info(FileID) ->
     {ok, Line} 	-> line_info(FileID, Line)
   end.
 
+% Iterate over each line in a file.
 % @TODO rewrite this so it's tail recursive
 line_info(FileID, Line) ->
   Info = line_info(FileID),
@@ -233,6 +243,7 @@ line_info(FileID, Line) ->
                     hlines = NewHLine,      clines = NewCLine,
                     curspan = NewCurSpan,   maxspan = NewMaxSpan	}.
 
+% Track header (comment) lines and code lines.
 line_counters(Info, LineType) ->
   if LineType == header ->
        {Info#lineinfo.hlines + 1, Info#lineinfo.clines};
@@ -242,6 +253,7 @@ line_counters(Info, LineType) ->
        {Info#lineinfo.hlines, Info#lineinfo.clines}
   end.
 
+% Track the length of each function.
 function_length(Count, Line) ->
   {ok, MP} = re:compile("^[^\\%]+\\.\\ *$"),
   case re:run(Line, MP, [{capture, none}]) of
@@ -266,7 +278,7 @@ more_recently_modified(File1, File2) ->
 
 %%%
 % Start loop
-%%% 
+%%%
 
 % @hidden Export to allow for hotswap.
 loop(IO, RunPid) ->
