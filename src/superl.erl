@@ -196,7 +196,7 @@ report_results(IO, Module, Info) ->
        ?STDOUT(?WARN_MODULES, [Module, Info#lineinfo.total]), nogood;
      Info#lineinfo.bigfunc > 20 ->
        ?STDOUT(?WARN_FUNC, [Module, Info#lineinfo.bigfunc]), nogood;
-     Ratio < 25 ->
+     Ratio < 50 ->
        ?STDOUT(?WARN_DOC, [Module, Ratio]), nogood;
      true -> good
   end.
@@ -204,12 +204,12 @@ report_results(IO, Module, Info) ->
 line_info(FileID) ->
   case file:read_line(FileID) of
     eof			-> #lineinfo{	tabs = false,
-                  max = 0,
-                  total = 0,
-                  curfunc = 0,
-                  bigfunc = 0,
-                  hlines = 0,
-                  clines = 0 };
+                                max = 0,
+                                total = 0,
+                                curfunc = 0,
+                                bigfunc = 0,
+                                hlines = 0,
+                                clines = 0 };
     {ok, Line} 	-> line_info(FileID, Line)
   end.
 
@@ -223,16 +223,16 @@ line_info(FileID, Line) ->
   end,
 
   NewMax = max(string:len(Line), Info#lineinfo.max),
-     NewTotal = Info#lineinfo.total + 1,
-     {NewCurFunc, LineType} = function_length(Info#lineinfo.curfunc, Line),
-     NewBigFunc = max(Info#lineinfo.bigfunc, NewCurFunc),
+  NewTotal = Info#lineinfo.total + 1,
+  {NewCurFunc, LineType} = function_length(Info#lineinfo.curfunc, Line),
+  NewBigFunc = max(Info#lineinfo.bigfunc, NewCurFunc),
 
   {NewHLine, NewCLine} = line_counters(Info, LineType),
 
   Info#lineinfo{	tabs = NewTabs,
           max = NewMax,			total = NewTotal,
-             curfunc = NewCurFunc,	bigfunc = NewBigFunc,
-             hlines = NewHLine,		clines = NewCLine	}.
+          curfunc = NewCurFunc,	bigfunc = NewBigFunc,
+          hlines = NewHLine,    clines = NewCLine	}.
 
 line_counters(Info, LineType) ->
   if LineType == header ->
@@ -241,7 +241,7 @@ line_counters(Info, LineType) ->
        {Info#lineinfo.hlines, Info#lineinfo.clines + 1};
      true ->	% LineType == blank
        {Info#lineinfo.hlines, Info#lineinfo.clines}
-     end.
+  end.
 
 function_length(Count, Line) ->
   {ok, MP} = re:compile("^[^\\%]+\\.\\ *$"),
