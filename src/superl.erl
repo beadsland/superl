@@ -78,7 +78,7 @@
 -include("macro.hrl").
 
 -record(lineinfo,
-        {	tabs, max, total, bigfunc, curfunc, hlines, clines, specs } ).
+        { tabs, max, total, bigfunc, curfunc, hlines, clines, curspan, maxspan } ).
 
 %%
 %% Exported Functions
@@ -185,9 +185,10 @@ test_lines(IO, File) ->
 -define(WARN_MODULES, "~s: avoid long modules (~p lines found)~n").
 -define(WARN_FUNC, "~s: avoid long functions (~p line function found)~n").
 -define(WARN_DOC, "~s: document code (~p% comment-to-code ratio found)~n").
+-define(WARN_SPAN, "~s: avoid long undocumented spans (~p line span found)~n").
 
 report_results(IO, Module, Info) ->
-  Ratio = round(Info#lineinfo.hlines / (Info#lineinfo.clines+1) * 100),
+  Ratio = round(Info#lineinfo.hlines / (Info#lineinfo.clines + 1) * 100),
   if Info#lineinfo.tabs == true     ->
        ?STDOUT(?WARN_TABS, [Module]), nogood;
      Info#lineinfo.max > 80         ->
@@ -196,8 +197,10 @@ report_results(IO, Module, Info) ->
        ?STDOUT(?WARN_MODULES, [Module, Info#lineinfo.total]), nogood;
      Info#lineinfo.bigfunc > 20     ->
        ?STDOUT(?WARN_FUNC, [Module, Info#lineinfo.bigfunc]), nogood;
-     Ratio < 50                     ->
+     Ratio < 40                     ->
        ?STDOUT(?WARN_DOC, [Module, Ratio]), nogood;
+     Info#lineinfo.maxspan > 25       ->
+       ?STDOUT(?WARN_SPAN, [Module, Info#lineinfo.maxspan]), nogood;
      true -> good
   end.
 
@@ -209,7 +212,9 @@ line_info(FileID) ->
                                 curfunc = 0,
                                 bigfunc = 0,
                                 hlines = 0,
-                                clines = 0 };
+                                clines = 0,
+                                curspan = 0,
+                                maxspan = 0 };
     {ok, Line} 	-> line_info(FileID, Line)
   end.
 
@@ -229,13 +234,17 @@ line_info(FileID, Line) ->
 
   {NewHLine, NewCLine} = line_counters(Info, LineType),
 
-  Ratio = round(NewHLine / (NewCLine+1) * 100),
-  ?DEBUG("h/c = ~p/~p = ~p%~n", [NewHLine, NewCLine, Ratio]),
+  if LineType == header     -> NewCurSpan = 0;
+     true                   -> NewCurSpan = Info#lineinfo.curspan + 1
+  end,
+
+  NewMaxSpan = max(NewCurSpan, Info#lineinfo.maxspan),
 
   Info#lineinfo{	tabs = NewTabs,
                     max = NewMax,			total = NewTotal,
                     curfunc = NewCurFunc,	bigfunc = NewBigFunc,
-                    hlines = NewHLine,      clines = NewCLine	}.
+                    hlines = NewHLine,      clines = NewCLine,
+                    curspan = NewCurSpan,   maxspan = NewMaxSpan	}.
 
 line_counters(Info, LineType) ->
   if LineType == header ->
