@@ -61,7 +61,7 @@
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
-%% @version 0.1.7
+%% @version 0.1.8
 
 -define(module, superl).
 
@@ -75,7 +75,7 @@
 -endif.
 % END POSE PACKAGE PATTERN
 
--version("0.1.7").
+-version("0.1.8").
 
 %%
 %% Include files
