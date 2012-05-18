@@ -64,7 +64,7 @@
 %% Include files
 %%
 
-%-define(debug, true).
+-define(debug, true).
 -include("pose/include/interface.hrl").
 
 -import(filename).
@@ -228,7 +228,9 @@ line_info(FileID, Line) ->
   NewBigFunc = max(Info#lineinfo.bigfunc, NewCurFunc),
 
   {NewHLine, NewCLine} = line_counters(Info, LineType),
-  ?DEBUG("h, c: ~p, ~p~n", [NewHLine, NewCLine]),
+
+  Ratio = round(NewHLine / (NewCLine+1) * 100),
+  ?DEBUG("h/c = ~p/~p = ~p%~n", [NewHLine, NewCLine, Ratio]),
 
   Info#lineinfo{	tabs = NewTabs,
                     max = NewMax,			total = NewTotal,
@@ -249,7 +251,7 @@ function_length(Count, Line) ->
   case re:run(Line, MP, [{capture, none}]) of
     match	-> {1, code};
     nomatch -> case Line of
-            [$%, $% | _More]	-> {Count, header};
+            [$% | _More]	    -> {Count, header};
             "\n"				-> {Count, blank};
             _Else				-> {Count + 1, code}
            end
