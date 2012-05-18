@@ -188,15 +188,15 @@ test_lines(IO, File) ->
 
 report_results(IO, Module, Info) ->
   Ratio = round(Info#lineinfo.hlines / (Info#lineinfo.clines+1) * 100),
-  if Info#lineinfo.tabs == true ->
+  if Info#lineinfo.tabs == true     ->
        ?STDOUT(?WARN_TABS, [Module]), nogood;
-     Info#lineinfo.max > 80 ->
+     Info#lineinfo.max > 80         ->
        ?STDOUT(?WARN_LINES, [Module, Info#lineinfo.max]), nogood;
-     Info#lineinfo.total > 400 ->
+     Info#lineinfo.total > 400      ->
        ?STDOUT(?WARN_MODULES, [Module, Info#lineinfo.total]), nogood;
-     Info#lineinfo.bigfunc > 20 ->
+     Info#lineinfo.bigfunc > 20     ->
        ?STDOUT(?WARN_FUNC, [Module, Info#lineinfo.bigfunc]), nogood;
-     Ratio < 50 ->
+     Ratio < 50                     ->
        ?STDOUT(?WARN_DOC, [Module, Ratio]), nogood;
      true -> good
   end.
@@ -228,11 +228,12 @@ line_info(FileID, Line) ->
   NewBigFunc = max(Info#lineinfo.bigfunc, NewCurFunc),
 
   {NewHLine, NewCLine} = line_counters(Info, LineType),
+  ?DEBUG("h, c: ~p, ~p~n", [NewHLine, NewCLine]),
 
   Info#lineinfo{	tabs = NewTabs,
-          max = NewMax,			total = NewTotal,
-          curfunc = NewCurFunc,	bigfunc = NewBigFunc,
-          hlines = NewHLine,    clines = NewCLine	}.
+                    max = NewMax,			total = NewTotal,
+                    curfunc = NewCurFunc,	bigfunc = NewBigFunc,
+                    hlines = NewHLine,      clines = NewCLine	}.
 
 line_counters(Info, LineType) ->
   if LineType == header ->
