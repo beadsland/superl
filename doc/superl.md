@@ -11,7 +11,7 @@ This is the superly good style checker for Erlang modules.
 
 Copyright (c) 2012 Beads D. Land-Trujillo
 
-__Version:__ 0.1.7
+__Version:__ 0.1.8
 
 __Authors:__ Beads D. Land-Trujillo (_web site:_ [`http://twitter.com/beadsland`](http://twitter.com/beadsland)).
 
