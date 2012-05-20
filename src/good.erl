@@ -83,13 +83,14 @@ run(IO, ARG, ENV) -> gen_command:run(IO, ARG, ENV, ?MODULE).
 
 %% @hidden Callback entry point for gen_command behaviour.
 do_run(IO, ARG) ->
-  case pose_command:load(superl) of
+  Command = superl,
+  case pose_command:load(Command) of
     {module, Module, Warnings}    ->
-      pose:send_load_warnings(IO, superl, Warnings),
+      pose:send_load_warnings(IO, Command, Warnings),
       Module:run(IO, ARG, ?ENV);
     {error, What, Warnings}       ->
-      pose:send_load_warnings(IO, superl, Warnings),
-      ?STDERR({superl, What}),
+      pose:send_load_warnings(IO, Command, Warnings),
+      ?STDERR({Command, What}),
       exit(What)
   end.
 
