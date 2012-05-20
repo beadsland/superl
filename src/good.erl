@@ -45,26 +45,48 @@
 %-define(debug, true).
 -include("pose/include/interface.hrl").
 
+-import(gen_command).
 -import(pose).
 -import(pose_command).
 
 %%
 %% Exported Functions
 %%
--export([run/3]).
+
+-behaviour(gen_command).
+
+% API entry points
+-export([start/0, start/1, run/3]).
+
+% Hidden callbacks
+-export([do_run/2]).
 
 %%
 %% API Functions
 %%
 
+-spec start() -> no_return().
+%% @equiv start([])
+start() -> start([]).
+
+-spec start(Param :: [atom()]) -> no_return().
+%% @doc Start as a blocking function.
+start(Param) -> gen_command:start(Param, ?MODULE).
+
 -spec run(IO :: #std{}, ARG :: #arg{}, ENV :: #env{}) -> no_return().
-%% @equiv superl:run(IO)
-run(IO, ARG, ENV) ->
-  ?INIT_POSE,
+%% doc Start as a `pose' command.
+run(IO, ARG, ENV) -> gen_command:run(IO, ARG, ENV, ?MODULE).
+
+%%
+%% Callback Functions
+%%
+
+%% @hidden Callback entry point for gen_command behaviour.
+do_run(IO, ARG) ->
   case pose_command:load(superl) of
     {module, Module, Warnings}    ->
       pose:send_load_warnings(IO, superl, Warnings),
-      Module:run(IO, ARG, ENV);
+      Module:run(IO, ARG, ?ENV);
     {error, What, Warnings}       ->
       pose:send_load_warnings(IO, superl, Warnings),
       ?STDERR({superl, What})
@@ -73,4 +95,3 @@ run(IO, ARG, ENV) ->
 %%
 %% Local Functions
 %%
-
