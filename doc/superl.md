@@ -13,6 +13,8 @@ Copyright (c) 2012 Beads D. Land-Trujillo
 
 __Version:__ 0.1.8
 
+__Behaviours:__ [`gen_command`](gen_command.md).
+
 __Authors:__ Beads D. Land-Trujillo (_web site:_ [`http://twitter.com/beadsland`](http://twitter.com/beadsland)).
 
 __References__
@@ -66,8 +68,7 @@ clauses within a single over-long function.<a name="index"></a>
 ##Function Index##
 
 
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#run-3">run/3</a></td><td>Start superly good style check as a
-<a href="http://github.com/beadsland/pose">pose</a> process.</td></tr><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Start superly good style check as a blocking function.</td></tr></table>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#run-3">run/3</a></td><td></td></tr><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Equivalent to <a href="#start-1"><tt>start([])</tt></a>.</td></tr><tr><td valign="top"><a href="#start-1">start/1</a></td><td>Start as a blocking function.</td></tr></table>
 
 
 <a name="functions"></a>
@@ -83,15 +84,22 @@ clauses within a single over-long function.<a name="index"></a>
 <br></br>
 
 
-Start superly good style check as a
-[pose](http://github.com/beadsland/pose) process.<a name="start-0"></a>
+<a name="start-0"></a>
 
 ###start/0##
 
 
-<pre>start() -&gt; ok | nogood</pre>
+<pre>start() -&gt; no_return()</pre>
 <br></br>
 
 
-Start superly good style check as a blocking function.
-All results are written to standard output.
+Equivalent to [`start([])`](#start-1).<a name="start-1"></a>
+
+###start/1##
+
+
+<pre>start(Param::[atom()]) -&gt; no_return()</pre>
+<br></br>
+
+
+Start as a blocking function.
