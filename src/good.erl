@@ -62,10 +62,12 @@
 run(IO, ARG, ENV) ->
   ?INIT_POSE,
   case pose_command:load(superl) of
-    {module, Module, Warnings}    -> pose:load_warn(IO, superl, Warnings),
-                                     Module:run(IO, ARG, ENV);
-    {error, What, Warnings}       -> pose:load_warn(IO, superl, Warnings),
-                                     ?STDERR({superl, What})
+    {module, Module, Warnings}    ->
+      pose:send_load_warnings(IO, superl, Warnings),
+      Module:run(IO, ARG, ENV);
+    {error, What, Warnings}       ->
+      pose:send_load_warnings(IO, superl, Warnings),
+      ?STDERR({superl, What})
   end.
 
 %%
