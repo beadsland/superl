@@ -61,7 +61,7 @@
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
-%% @version 0.1.9
+%% @version 0.1.8
 
 -define(module, superl).
 
@@ -75,9 +75,7 @@
 -endif.
 % END POSE PACKAGE PATTERN
 
--version("0.1.9").
-
--behaviour(gen_command).
+-version("0.1.8").
 
 %%
 %% Include files
@@ -86,7 +84,6 @@
 -define(debug, true).
 -include("pose/include/interface.hrl").
 
--import(gen_command).
 -import(filename).
 -import(file).
 -import(lists).
@@ -105,26 +102,31 @@
 %% Exported Functions
 %%
 
--export([start/0, start/1, do_run/2]).
+% API functions
+-export([start/0, run/3]).
+
+% Qualified functions
+-export([loop/2]).
 
 %%
 %% API Functions
 %%
 
--spec start() -> no_return().
-%% @equiv start([])
-start() -> start([]).
-
--spec start(Param :: [atom()]) -> no_return().
+-spec start() -> ok | nogood.
 %% @doc Start superly good style check as a blocking function.
-start(Param) -> gen_command:start(Param, ?MODULE).
-
--spec do_run(IO :: #std{}, ARG :: #arg{}) -> no_return().
-%% @doc Callback function for
-%% <a href="http://github.com/beadsland/pose">pose</a>
-%% `gen_command' behaviour.
+%% All results are written to standard output.
 %% @end
-do_run(IO, _ARG) ->
+start() ->
+  IO = ?IO(self()),
+  RunPid = spawn_link(?MODULE, run, [IO, ?ARG(?MODULE), ?ENV]),
+  ?MODULE:loop(IO, RunPid).
+
+-spec run(IO :: #std{}, ARG :: #arg{}, ENV :: #env{}) -> no_return().
+%% @doc Start superly good style check as a
+%% <a href="http://github.com/beadsland/pose">pose</a> process.
+%% @end
+run(IO, _ARG, ENV) ->
+  ?INIT_POSE,
   ?STDOUT("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
 
   Src = filename:absname("src"),
@@ -140,8 +142,8 @@ do_run(IO, _ARG) ->
   Sorted = lists:sort(fun more_recently_modified/2, SrcComp ++ IncComp),
 
   case review(IO, Sorted) of
-    good	-> ?STDOUT("All good!\n"), ok;
-    nogood	-> ?STDOUT("Not yet superly good.\n"), nogood
+    good    -> ?STDOUT("All good!\n"), exit(ok);
+    nogood  -> ?STDOUT("Not yet superly good.\n"), exit(nogood)
   end.
 
 %%
@@ -185,8 +187,8 @@ review(_IO, []) -> good;
 review(IO, [Head | Tail]) ->
   TailResult = review(IO, Tail),
   case test_lines(IO, Head) of
-    nogood	-> nogood;
-    good	-> TailResult
+    nogood  -> nogood;
+    good    -> TailResult
   end.
 
 % Analyze a specific file.
@@ -200,7 +202,7 @@ test_lines(IO, File) ->
 % Open a file to analyze same.
 line_info(FileID) ->
   case file:read_line(FileID) of
-    eof			-> #lineinfo{	tabs = false,
+    eof         -> #lineinfo{   tabs = false,
                                 max = 0,
                                 total = 0,
                                 curfunc = 0,
@@ -209,7 +211,7 @@ line_info(FileID) ->
                                 clines = 0,
                                 curspan = 0,
                                 maxspan = 0 };
-    {ok, Line} 	-> line_info(FileID, Line)
+    {ok, Line}  -> line_info(FileID, Line)
   end.
 
 % Iterate over each line in a file.
@@ -218,8 +220,8 @@ line_info(FileID, Line) ->
   Info = line_info(FileID),
 
   case re:run(Line, "^\s*\t+", [{capture, none}]) of
-    nomatch	-> NewTabs = Info#lineinfo.tabs;
-    match	-> NewTabs = true
+    nomatch -> NewTabs = Info#lineinfo.tabs;
+    match   -> NewTabs = true
   end,
 
   NewMax = max(string:len(Line), Info#lineinfo.max),
@@ -235,11 +237,11 @@ line_info(FileID, Line) ->
 
   NewMaxSpan = max(NewCurSpan, Info#lineinfo.maxspan),
 
-  Info#lineinfo{	tabs = NewTabs,
-                    max = NewMax,			total = NewTotal,
-                    curfunc = NewCurFunc,	bigfunc = NewBigFunc,
+  Info#lineinfo{    tabs = NewTabs,
+                    max = NewMax,           total = NewTotal,
+                    curfunc = NewCurFunc,   bigfunc = NewBigFunc,
                     hlines = NewHLine,      clines = NewCLine,
-                    curspan = NewCurSpan,   maxspan = NewMaxSpan	}.
+                    curspan = NewCurSpan,   maxspan = NewMaxSpan    }.
 
 % Track header (comment) lines and code lines.
 line_counters(Info, LineType) ->
@@ -247,7 +249,7 @@ line_counters(Info, LineType) ->
        {Info#lineinfo.hlines + 1, Info#lineinfo.clines};
      LineType == code ->
        {Info#lineinfo.hlines, Info#lineinfo.clines + 1};
-     true ->	% LineType == blank
+     true ->    % LineType == blank
        {Info#lineinfo.hlines, Info#lineinfo.clines}
   end.
 
@@ -255,11 +257,11 @@ line_counters(Info, LineType) ->
 function_length(Count, Line) ->
   {ok, MP} = re:compile("^[^\\%]+\\.\\ *$"),
   case re:run(Line, MP, [{capture, none}]) of
-    match	-> {1, code};
+    match   -> {1, code};
     nomatch -> case Line of
-            [$% | _More]	    -> {Count, header};
-            "\n"				-> {Count, blank};
-            _Else				-> {Count + 1, code}
+            [$% | _More]        -> {Count, header};
+            "\n"                -> {Count, blank};
+            _Else               -> {Count + 1, code}
            end
   end.
 
@@ -273,3 +275,33 @@ more_recently_modified(File1, File2) ->
   if FileInfo1#file_info.mtime > FileInfo2#file_info.mtime  -> true;
      true                                                   -> false
   end.
+
+%%%
+% Start loop
+%%%
+
+% @hidden Export to allow for hotswap.
+loop(IO, RunPid) ->
+  receive
+    {purging, _Pid, _Mod}       -> ?MODULE:loop(IO, RunPid);
+    {'EXIT', RunPid, Reason}    -> Reason;
+    {MsgTag, RunPid, Line}      -> do_output(MsgTag, Line),
+                                   ?MODULE:loop(IO, RunPid);
+    Noise                       -> do_noise(Noise),
+                                   ?MODULE:loop(IO, RunPid)
+  end.
+
+% Handle stderr and stdout messages.
+do_output(MsgTag, Output) ->
+  case MsgTag of
+    stdout  -> io:format("~s", [Output]);
+    erlout  -> io:format("~p: data: ~p~n", [?MODULE, Output]);
+    erlerr  -> Erlerr = ?FORMAT_ERLERR(Output),
+               io:format(standard_error, "** ~s~n", [Erlerr]);
+    stderr  -> io:format(standard_error, "** ~s", [Output]);
+    debug   -> io:format(standard_error, "-- ~s", [Output])
+  end.
+
+% Handle message queue noise.
+do_noise(Noise) ->
+  io:format(standard_error, "noise: ~p ~p~n", [Noise, self()]).
