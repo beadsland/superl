@@ -89,7 +89,8 @@ do_run(IO, ARG) ->
       Module:run(IO, ARG, ?ENV);
     {error, What, Warnings}       ->
       pose:send_load_warnings(IO, superl, Warnings),
-      ?STDERR({superl, What})
+      ?STDERR({superl, What}),
+      exit(What)
   end.
 
 %%
