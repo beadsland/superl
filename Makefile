@@ -62,7 +62,6 @@ good:	compile
 		
 compile:
 	@rm -f *.dump doc/*.md doc/*.html
-	@ERL_DOC=deps; export ERL_DOC
 	@rebar compile doc | $(SUCCINCT)
 
 doc:	compile
