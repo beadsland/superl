@@ -11,7 +11,7 @@ Pose-compatible alias for [`superl`](superl.md).
 
 Copyright (c) 2012 Beads D. Land-Trujillo
 
-__Behaviours:__ [`gen_command`](gen_command.md).
+__Behaviours:__ [`gen_command`](d:/workspace/nosh/../pose/doc/gen_command.md).
 
 __Authors:__ Beads D. Land-Trujillo (_web site:_ [`http://twitter.com/beadsland`](http://twitter.com/beadsland)).
 <a name="types"></a>
