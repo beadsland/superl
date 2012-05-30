@@ -78,3 +78,11 @@ development environments.
 If using the Eclipse IDE, one way to handle this is with the AnyEdit
   Tools plugin [`http://andrei.gmxhome.de/anyedit/`](http://andrei.gmxhome.de/anyedit/), available in the
   Eclipse Marketplace.
+
+##Modules##
+
+
+<table width="100%" border="0" summary="list of modules">
+<tr><td><a href="http://github.com/beadsland/superl/blob/master/doc/good.md" class="module">good</a></td></tr>
+<tr><td><a href="http://github.com/beadsland/superl/blob/master/doc/superl.md" class="module">superl</a></td></tr></table>
+

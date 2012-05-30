@@ -1,7 +1,8 @@
 
 
-#Module ?module#
+#Module superl#
 * [Description](#description)
+* [Data Types](#types)
 * [Function Index](#index)
 * [Function Details](#functions)
 
@@ -60,7 +61,20 @@ it helps to break up code visually in color-coded IDEs.  Second, it
 provides an opportunity to narrate multi-arity progressions of
 functions, where such functions often represent several steps of the
 same complex operation, broken up to avoid nesting `if` and `case`
-clauses within a single over-long function.<a name="index"></a>
+clauses within a single over-long function.
+<a name="types"></a>
+
+##Data Types##
+
+
+
+
+###<a name="type-env_prop">env_prop()</a>##
+
+
+
+	env_prop() = atom() | {atom(), string()}
+<a name="index"></a>
 
 ##Function Index##
 
@@ -77,7 +91,7 @@ clauses within a single over-long function.<a name="index"></a>
 ###run/3##
 
 
-	run(IO::#std{}, ARG::#arg{}, ENV::#env{}) -&gt; no_return()
+	run(IO::#std{in = pid(), out = pid(), err = pid(), echo = boolean()}, ARG::#arg{cmd = atom(), v = list()}, ENV::#env{plist = [<a href="#type-env_prop">env_prop()</a>]}) -> no_return()
 <br></br>
 
 
