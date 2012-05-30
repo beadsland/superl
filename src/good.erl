@@ -58,7 +58,7 @@
 % API entry points
 -export([start/0, start/1, run/3]).
 
-% Hidden callbacks
+% Private callbacks
 -export([do_run/2]).
 
 %%
@@ -81,7 +81,7 @@ run(IO, ARG, ENV) -> gen_command:run(IO, ARG, ENV, ?MODULE).
 %% Callback Functions
 %%
 
-%% @hidden Callback entry point for gen_command behaviour.
+%% @private Callback entry point for gen_command behaviour.
 do_run(IO, ARG) ->
   Command = superl,
   case pose_command:load(Command) of
