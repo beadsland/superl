@@ -61,7 +61,7 @@ run:	current good
 
 good:	compile
 	@erl $(ERL_PATH) -i deps -noshell $(SUPERL) -s init stop
-		
+
 compile:
 	@rm -f *.dump doc/*.md doc/*.html
 	@$(REBAR:%OPS=compile doc)
