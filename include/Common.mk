@@ -86,8 +86,6 @@ clean:
 #
 
 push:	make
-	@echo $(DEV)
-	@echo $(ONLINE)
 	@if [ "$(DEV)" == yes -a "$(ONLINE)" == yes ]; \
 		then (git push origin master); fi
 		
