@@ -22,7 +22,7 @@
 # by brackets replaced by your own identifying information.
 # "Portions Copyright [year] [name of copyright owner]"
 # 
-# Copyright 2012 Beads D. Land-Trujillo.  All Rights Reserved
+# Copyright 2012 Beads D. Land-Trujillo.  All Rights Reserved.
 # -----------------------------------------------------------------------
 # CDDL HEADER END
 
@@ -82,9 +82,12 @@ online:
 			else (echo "Working offline"); fi
 
 #
-# Development rules
+# Run non-overridden common rules.
 #
 
-push:	online
-	@if [ "$(DEV)" == yes -a "$(ONLINE)" == yes ]; \
-			then (git push origin master); fi
+todo:
+	@$(COMMAKE)
+	
+%::			;
+	@echo No custom target found
+	@$(COMMAKE)
