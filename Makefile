@@ -26,67 +26,11 @@
 # -----------------------------------------------------------------------
 # CDDL HEADER END
 
-SHELL	= 	/bin/sh
-
-ifeq ($(COMPUTERNAME),GOVMESH-BOOK)
-	DEV		=	yes
-else
-	DEV		=	no
-endif
-
-ifeq ($(shell which ping),/cygdrive/c/Windows/system32/ping)
-	PING	=	ping -n 1
-else
-	PING	=	ping -c1
-endif
-
-ONLINE	=	`$(PING) www.google.com 2>&1 >/dev/null; \
-			if [ "$$?" -eq "0" ]; then (echo yes); else (echo no); fi`
-
-SUCCINCT	=	grep -v "Entering directory" | grep -v "Leaving directory"
-
-ERL_PATH	= 	-pa ebin
-POSURE		=	-pa deps/pose/ebin -s posure
-SUPERL		=	-s superl $(POSURE) -s init stop
-
-REBAR		=	rebar %OPS | $(SUCCINCT)
-
-#
-# Build rules start
-#
-
-all:	push good
-
-run:	current good
-
-good:	compile
-	@erl $(ERL_PATH) -i deps -noshell $(SUPERL) -s init stop
-
-compile:
-	@rm -f *.dump doc/*.md doc/*.html
-	@$(REBAR:%OPS=compile doc)
-
-doc:	compile
-
-current:
-	@$(REBAR:%OPS=update-deps compile doc)
-
-clean: 		online
-	@if [ "$(ONLINE)" == yes ]; \
-			then (rm -rf deps; $(REBAR:%OPS=clean get-deps)); \
-			else $(REBAR:%OPS=clean); fi
-	
-online:	
-	@if [ "$(ONLINE)" == yes ]; \
-			then (echo "Working online"); \
-			else (echo "Working offline"); fi
+include include/Header.mk
 
 #
 # Run non-overridden common rules.
 #
-
-todo:
-	@$(COMMAKE)
 	
 %::			;
 	@echo No custom target found
