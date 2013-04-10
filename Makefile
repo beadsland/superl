@@ -32,6 +32,6 @@ include include/Header.mk
 # Run non-overridden common rules.
 #
 	
-%::			;
+%::
 	@echo No custom target found
 	@$(COMMAKE)
