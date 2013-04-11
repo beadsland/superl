@@ -32,10 +32,10 @@ include include/Header.mk
 
 all:		push compile good
 
-good:		$(DEPS)/pose/ebin/pose.beam
+good:		
 	@$(ERL) $(SUPERL) $(POSURE) $(STOP)
 	
-$(DEPS)/pose/ebin/pose.beam:
+$(POSEBIN)/pose.beam:
 	$(error Must compile pose to do good)
 
 #

@@ -94,10 +94,13 @@ COMMAKE		= $(SUBMAKE:_param_=-f include/Common.mk $@)
 #
 
 ifndef DEPS
-	DEPS =		deps
+	DEPS = 		deps
 endif
-POSEPATH =	-pa $(DEPS)/pose/ebin
-ERL	=		erl -noshell -i $(DEPS) -deps $(DEPS) $(POSEPATH)
+ifndef POSEBIN
+	POSEBIN = 	$(DEPS)/pose/ebin
+endif
+
+ERL	=		erl -noshell -i $(DEPS) -deps $(DEPS) -pa $(POSEBIN)
 
 POSURE	=	-s pose start posure
 SUPERL	=	-s pose start superl
