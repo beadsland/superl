@@ -18,7 +18,7 @@
 %% by brackets replaced by your own identifying information:
 %% "Portions Copyright [year] [name of copyright owner]"
 %%
-%% Copyright 2012 Beads D. Land-Trujillo.  All Rights Reserved
+%% Copyright 2012, 2013 Beads D. Land-Trujillo.  All Rights Reserved
 %% -----------------------------------------------------------------------
 %% CDDL HEADER END
 
@@ -55,13 +55,13 @@
 %% Most Common Mistakes</a> section of same document.
 %% @end
 %% @author Beads D. Land-Trujillo [http://twitter.com/beadsland]
-%% @copyright 2012 Beads D. Land-Trujillo
+%% @copyright 2012, 2013 Beads D. Land-Trujillo
 
 %% @todo check for bad return types (rewrite as edoc doclet??)
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
-%% @version 0.1.9
+%% @version 0.1.10
 
 -define(module, superl).
 
@@ -75,7 +75,7 @@
 -endif.
 % END POSE PACKAGE PATTERN
 
--version("0.1.9").
+-version("0.1.10").
 
 %%
 %% Include files
@@ -159,7 +159,7 @@ do_run(IO, _ARG) ->
 % Report results
 %%%
 
--define(ANYEDIT, "AnyEdit not auto-convert not working in Juno 4.2: use ctrl-S\n").
+-define(ANYEDIT, "~s: AnyEdit auto-convert not working in Juno 4.2: use ctrl-s~n").
 -define(WARN_TABS, "~s: avoid leading tabs (convert to spaces)~n").
 -define(WARN_LINES, "~s: avoid long lines (~p char line found)~n").
 -define(WARN_MODULES, "~s: avoid long modules (~p lines found)~n").
@@ -170,7 +170,7 @@ do_run(IO, _ARG) ->
 report_results(IO, Module, Info) ->
   Ratio = round(Info#lineinfo.hlines / (Info#lineinfo.clines + 1) * 100),
   if Info#lineinfo.tabs == true     ->
-       ?STDOUT(?WARN_TABS, [Module]), ?STDOUT(?ANYEDIT), nogood;
+       ?STDOUT(?WARN_TABS, [Module]), ?STDOUT(?ANYEDIT, [Module]), nogood;
      Info#lineinfo.max > 80         ->
        ?STDOUT(?WARN_LINES, [Module, Info#lineinfo.max]), nogood;
      Info#lineinfo.total > 400      ->
