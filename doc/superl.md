@@ -9,9 +9,9 @@
 
 This is the superly good style checker for Erlang modules.
 
-Copyright (c) 2012 Beads D. Land-Trujillo
+Copyright (c) 2012, 2013 Beads D. Land-Trujillo
 
-__Version:__ 0.1.9
+__Version:__ 0.1.10
 
 __Behaviours:__ [`gen_command`](gen_command.md).
 
