@@ -159,6 +159,7 @@ do_run(IO, _ARG) ->
 % Report results
 %%%
 
+-define(ANYEDIT, "AnyEdit not auto-convert not working in Juno 4.2: use ctrl-S\n").
 -define(WARN_TABS, "~s: avoid leading tabs (convert to spaces)~n").
 -define(WARN_LINES, "~s: avoid long lines (~p char line found)~n").
 -define(WARN_MODULES, "~s: avoid long modules (~p lines found)~n").
@@ -169,7 +170,7 @@ do_run(IO, _ARG) ->
 report_results(IO, Module, Info) ->
   Ratio = round(Info#lineinfo.hlines / (Info#lineinfo.clines + 1) * 100),
   if Info#lineinfo.tabs == true     ->
-       ?STDOUT(?WARN_TABS, [Module]), nogood;
+       ?STDOUT(?WARN_TABS, [Module]), ?STDOUT(?ANYEDIT), nogood;
      Info#lineinfo.max > 80         ->
        ?STDOUT(?WARN_LINES, [Module, Info#lineinfo.max]), nogood;
      Info#lineinfo.total > 400      ->
