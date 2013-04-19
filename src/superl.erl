@@ -18,7 +18,7 @@
 %% by brackets replaced by your own identifying information:
 %% "Portions Copyright [year] [name of copyright owner]"
 %%
-%% Copyright 2012, 2013 Beads D. Land-Trujillo.  All Rights Reserved
+%% Copyright 2012, 2013 Beads D. Land-Trujillo.  All Rights Reserved.
 %% -----------------------------------------------------------------------
 %% CDDL HEADER END
 
@@ -83,6 +83,13 @@
 
 -define(debug, true).
 -include_lib("pose/include/interface.hrl").
+-include_lib("pose/include/macro.hrl").
+
+-record(lineinfo,
+        {   tabs, max, total, bigfunc, curfunc,
+            hlines, clines, curspan, maxspan } ).
+
+-include_lib("kernel/include/file.hrl").
 
 -import(gen_command).
 -import(filename).
@@ -90,13 +97,6 @@
 -import(lists).
 -import(re).
 -import(string).
-
--include_lib("kernel/include/file.hrl").
--include("macro.hrl").
-
--record(lineinfo,
-        {   tabs, max, total, bigfunc, curfunc,
-            hlines, clines, curspan, maxspan } ).
 
 %%
 %% Exported Functions
