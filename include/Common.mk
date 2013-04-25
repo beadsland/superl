@@ -32,12 +32,16 @@ include include/Header.mk
 
 all:		push compile good
 
-good:		$(POSEBIN)/pose.beam
+good:		override DEPS := $(GOOD_DEPS)
+# Target-specific variables aren't picked up by dependencies list, 
+# so we move dependency relation to a submake.
+good:		
+	@$(SUBMAKE:_param_=-f include/Common.mk $(POSEBIN)/pose.beam) \
+		| ($(GREP) -v "is up to date"; status=$$?)
 	@$(ERL) $(SUPERL) $(POSURE) $(STOP)
-	
-$(POSEBIN)/pose.beam:
-	@if [ ! -f $(POSEBIN)/pose.beam ]
-	$(error Must compile pose to do good)
+
+%/ebin/pose.beam:	%/src/pose.erl
+	$(error Must compile $(*) to do good)
 
 #
 # Rules to regenerate documentation
@@ -62,9 +66,8 @@ README.md:	doc/TODO_head.edoc doc/overview.edoc src/overview.hrl
 	@$(CROWBAR:_cmds_=doc)
 
 doc/TODO_head.edoc:		TODO.edoc
-	@if [ $(TODO_MORE) -gt 0 ]; \
-		then (head -7 TODO.edoc; \
-			  echo "@todo ...plus $(TODO_MORE) more (see TODO.edoc)"); fi \
+	@(head -7 TODO.edoc; if [ $(TODO_MORE) -gt 0 ]; \
+			then echo "@todo ...plus $(TODO_MORE) more (see TODO.edoc)"; fi) \
 		> doc/TODO_head.edoc
 
 TODO.edoc:	;
