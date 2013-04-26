@@ -230,7 +230,7 @@ line_info(FileID, Line) ->
     match   -> NewTabs = true
   end,
 
-  NewMax = max(string:len(Line), Info#lineinfo.max),
+  NewMax = max(string:len(string:strip(Line, right, $\n)), Info#lineinfo.max),
   NewTotal = Info#lineinfo.total + 1,
   {NewCurFunc, LineType} = function_length(Info#lineinfo.curfunc, Line),
   NewBigFunc = max(Info#lineinfo.bigfunc, NewCurFunc),
