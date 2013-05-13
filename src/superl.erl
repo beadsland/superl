@@ -159,7 +159,8 @@ do_run(IO, _ARG) ->
 % Report results
 %%%
 
--define(ANYEDIT, "~s: AnyEdit auto-convert not working in Juno 4.2: use ctrl-s~n").
+-define(ANYEDIT, 
+        "~s: AnyEdit auto-convert not working in Juno 4.2: use ctrl-s~n").
 -define(WARN_TABS, "~s: avoid leading tabs (convert to spaces)~n").
 -define(WARN_LINES, "~s: avoid long lines (~p char line found)~n").
 -define(WARN_MODULES, "~s: avoid long modules (~p lines found)~n").
