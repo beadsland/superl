@@ -81,7 +81,7 @@
 %% Include files
 %%
 
--define(debug, true).
+%-define(debug, true).
 -include_lib("pose/include/interface.hrl").
 -include_lib("pose/include/macro.hrl").
 
@@ -91,12 +91,16 @@
 
 -include_lib("kernel/include/file.hrl").
 
+% BEGIN POSE PACKAGE IMPORTS
+-ifdef(package).
 -import(gen_command).
 -import(filename).
 -import(file).
 -import(lists).
 -import(re).
 -import(string).
+-endif.
+% END POSE PACKAGE IMPORTS
 
 %%
 %% Exported Functions
@@ -226,22 +230,15 @@ line_info(FileID) ->
 line_info(FileID, Line) ->
   Info = line_info(FileID),
 
-  case re:run(Line, "^\s*\t+", [{capture, none}]) of
-    nomatch -> NewTabs = Info#lineinfo.tabs;
-    match   -> NewTabs = true
-  end,
+  TabsMatch = re:run(Line, "^\s*\t+", [{capture, none}]),
+  NewTabs = case TabsMatch of nomatch -> Info#lineinfo.tabs; match -> true end,
 
   NewMax = max(string:len(string:strip(Line, right, $\n)), Info#lineinfo.max),
   NewTotal = Info#lineinfo.total + 1,
   {NewCurFunc, LineType} = function_length(Info#lineinfo.curfunc, Line),
   NewBigFunc = max(Info#lineinfo.bigfunc, NewCurFunc),
-
   {NewHLine, NewCLine} = line_counters(Info, LineType),
-
-  if LineType == header     -> NewCurSpan = 0;
-     true                   -> NewCurSpan = Info#lineinfo.curspan + 1
-  end,
-
+  NewCurSpan = if LineType==header -> 0; true -> Info#lineinfo.curspan + 1 end,
   NewMaxSpan = max(NewCurSpan, Info#lineinfo.maxspan),
 
   Info#lineinfo{    tabs = NewTabs,
