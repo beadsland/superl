@@ -138,8 +138,8 @@ run(IO, ARG, ENV) -> gen_command:run(IO, ARG, ENV, ?MODULE).
 do_run(IO, _ARG) ->
   ?STDOUT("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
 
-  Src = filename:absname("src"),
-  Inc = filename:absname("include"),
+  Src = filename:join(pose:iwd(), "src"),
+  Inc = filename:join(pose:iwd(), "include"),
 
   {ok, SrcList} = file:list_dir(Src),
   {ok, IncList} = file:list_dir(Inc),
