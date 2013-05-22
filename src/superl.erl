@@ -206,6 +206,7 @@ review(IO, [Head | Tail]) ->
 test_lines(IO, File) ->
   {ok, FileID} = file:open(File, [read]),
   Info = line_info(FileID),
+  file:close(FileID),
   {ok, MP} = re:compile("([^\\/]+)\\.[he]rl$"),
   {match, [Module]} = re:run(File, MP, [{capture, [1], list}]),
   report_results(IO, Module, Info).
