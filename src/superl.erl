@@ -62,7 +62,6 @@
 %% @todo simple variable naming tests
 
 %% @version 0.1.10
-
 -define(module, superl).
 
 % BEGIN POSE PACKAGE PATTERN
@@ -99,6 +98,7 @@
 -import(lists).
 -import(re).
 -import(string).
+-import(pose).
 -endif.
 % END POSE PACKAGE IMPORTS
 
