@@ -11,7 +11,7 @@ This is the superly good style checker for Erlang modules.
 
 Copyright (c) 2012, 2013 Beads D. Land-Trujillo
 
-__Version:__ 0.1.10
+__Version:__ 0.1.11
 
 __Behaviours:__ [`gen_command`](gen_command.md).
 
@@ -23,6 +23,9 @@ Erlang style conventions](http://www.erlang.se/doc/programming_rules..md#REF1130
 * See also
 [
 Most Common Mistakes](http://www.erlang.se/doc/programming_rules..md#REF66257) section of same document.
+* For wisdom on how many parameters are too many, see
+[C2 Wiki](http://c2.com/cgi/wiki?TooManyParameters) and
+[Stack Overflow](http://goo.gl/lACxP) discussions of same.
 
 
 __<font color="red">To do</font>__
@@ -38,7 +41,7 @@ __<font color="red">To do</font>__
 
 
 Checks all modules and header files in an OTP project for good style,
-and reports the highest priority issue found in each file.
+and reports the highest priority bad smells found in each file.
 Files are sorted by last modification date, such that the issues
 in the most recently updated files are the first identified.
 
@@ -46,15 +49,14 @@ in the most recently updated files are the first identified.
 
 In addition to identifying issues with leading tabs, long lines,
 long files, and long modules, `superl` also looks for good commenting.
-
-
-
 A rule of thumb for good code-to-comments is a ratio of 1:4 (not
 counting white space).  However, given the importance of inline `edoc`
 comments in Erlang modules, `superl` currently reports any file with
 less than a 40% ratio.
 
-Similarly, `edoc` looks for good comment distribution, in that on
+
+
+Similarly, looks for good comment distribution, in that on
 average, longer functions are expected to have at least one comment
 line as a header.  This comment line serves two functions.  First,
 it helps to break up code visually in color-coded IDEs.  Second, it
@@ -62,6 +64,10 @@ provides an opportunity to narrate multi-arity progressions of
 functions, where such functions often represent several steps of the
 same complex operation, broken up to avoid nesting `if` and `case`
 clauses within a single over-long function.
+
+That said, high-arity functions--in addition to being harder to read
+and understand--likely indicate either a failure to encapsulate related data
+or an attempt to make one function responsible for too many things.
 <a name="types"></a>
 
 ##Data Types##

@@ -25,19 +25,18 @@
 %% @doc This is the superly good style checker for Erlang modules.
 %%
 %% Checks all modules and header files in an OTP project for good style,
-%% and reports the highest priority issue found in each file.
+%% and reports the highest priority bad smells found in each file.
 %% Files are sorted by last modification date, such that the issues
 %% in the most recently updated files are the first identified.
 %%
 %% In addition to identifying issues with leading tabs, long lines,
 %% long files, and long modules, `superl' also looks for good commenting.
-%%
 %% A rule of thumb for good code-to-comments is a ratio of 1:4 (not
 %% counting white space).  However, given the importance of inline `edoc'
 %% comments in Erlang modules, `superl' currently reports any file with
 %% less than a 40% ratio.
 %%
-%% Similarly, `edoc' looks for good comment distribution, in that on
+%% Similarly, looks for good comment distribution, in that on
 %% average, longer functions are expected to have at least one comment
 %% line as a header.  This comment line serves two functions.  First,
 %% it helps to break up code visually in color-coded IDEs.  Second, it
@@ -45,6 +44,10 @@
 %% functions, where such functions often represent several steps of the
 %% same complex operation, broken up to avoid nesting `if' and `case'
 %% clauses within a single over-long function.
+%%
+%% That said, high-arity functions--in addition to being harder to read
+%% and understand--likely indicate either a failure to encapsulate related data
+%% or an attempt to make one function responsible for too many things.
 %% @end
 %% @reference Rudimentary checks for
 %% <a href="http://www.erlang.se/doc/programming_rules.shtml#REF11301">
@@ -54,6 +57,11 @@
 %% <a href="http://www.erlang.se/doc/programming_rules.shtml#REF66257">
 %% Most Common Mistakes</a> section of same document.
 %% @end
+%% @reference For wisdom on how many parameters are too many, see
+%% <a href="http://c2.com/cgi/wiki?TooManyParameters">C2 Wiki</a> and
+%% <a href="http://goo.gl/lACxP">Stack Overflow</a> discussions of same. 
+%% @end
+
 %% @author Beads D. Land-Trujillo [http://twitter.com/beadsland]
 %% @copyright 2012, 2013 Beads D. Land-Trujillo
 
@@ -61,7 +69,7 @@
 %% @todo check for deep nesting (largely dealt with by line/func length)
 %% @todo simple variable naming tests
 
-%% @version 0.1.10
+%% @version 0.1.11
 -define(module, superl).
 
 % BEGIN POSE PACKAGE PATTERN
@@ -74,19 +82,21 @@
 -endif.
 % END POSE PACKAGE PATTERN
 
--version("0.1.10").
+-version("0.1.11").
 
 %%
 %% Include files
 %%
 
-%-define(debug, true).
+-define(debug, true).
 -include_lib("pose/include/interface.hrl").
 -include_lib("pose/include/macro.hrl").
 
 -record(lineinfo,
-        {   tabs, max, total, bigfunc, curfunc,
-            hlines, clines, curspan, maxspan } ).
+        {   tabs = false, max = 0, total = 0, bigfunc = 0, curfunc = 0,
+            hlines = 0, clines = 0, curspan = 0, maxspan = 0    } ).
+
+-record(syninfo, {   maxarity = 0   }).
 
 -include_lib("kernel/include/file.hrl").
 
@@ -99,6 +109,7 @@
 -import(re).
 -import(string).
 -import(pose).
+-import(pose_syntax).
 -endif.
 % END POSE PACKAGE IMPORTS
 
@@ -171,8 +182,10 @@ do_run(IO, _ARG) ->
 -define(WARN_FUNC, "~s: avoid long functions (~p line function found)~n").
 -define(WARN_DOC, "~s: document code (~p% comment-to-code ratio found)~n").
 -define(WARN_SPAN, "~s: avoid long undocumented spans (~p line span found)~n").
+-define(WARN_ARITY, 
+        "~s: avoid too many parameters (~p arity function found)~n").
 
-report_results(IO, Module, Info) ->
+report_results(IO, Module, Info, MoreInfo) ->
   Ratio = round(Info#lineinfo.hlines / (Info#lineinfo.clines + 1) * 100),
   if Info#lineinfo.tabs == true     ->
        ?STDOUT(?WARN_TABS, [Module]), ?STDOUT(?ANYEDIT, [Module]), nogood;
@@ -186,6 +199,8 @@ report_results(IO, Module, Info) ->
        ?STDOUT(?WARN_DOC, [Module, Ratio]), nogood;
      Info#lineinfo.maxspan > 30     ->
        ?STDOUT(?WARN_SPAN, [Module, Info#lineinfo.maxspan]), nogood;
+     MoreInfo#syninfo.maxarity > 4  ->
+       ?STDOUT(?WARN_ARITY, [Module, MoreInfo#syninfo.maxarity]), nogood;
      true -> good
   end.
 
@@ -204,25 +219,26 @@ review(IO, [Head | Tail]) ->
 
 % Analyze a specific file.
 test_lines(IO, File) ->
+  {ok, MP} = re:compile("([^\\/]+)\\.[he]rl$"),
+  {match, [Module]} = re:run(File, MP, [{capture, [1], list}]),
   {ok, FileID} = file:open(File, [read]),
   Info = line_info(FileID),
   file:close(FileID),
-  {ok, MP} = re:compile("([^\\/]+)\\.[he]rl$"),
-  {match, [Module]} = re:run(File, MP, [{capture, [1], list}]),
-  report_results(IO, Module, Info).
+  MoreInfo = test_syntax(File),
+  report_results(IO, Module, Info, MoreInfo).
+
+% Parse file to perform syntax checks.
+test_syntax(File) -> test_syntax(pose_syntax:functions(File), #syninfo{}).
+
+test_syntax([], Info) -> Info;
+test_syntax([{_Func, Arity} | Tail], Info) ->
+  MaxArity = max(Info#syninfo.maxarity, Arity),
+  test_syntax(Tail, #syninfo{ maxarity = MaxArity }).
 
 % Open a file to analyze same.
 line_info(FileID) ->
   case file:read_line(FileID) of
-    eof         -> #lineinfo{   tabs = false,
-                                max = 0,
-                                total = 0,
-                                curfunc = 0,
-                                bigfunc = 0,
-                                hlines = 0,
-                                clines = 0,
-                                curspan = 0,
-                                maxspan = 0 };
+    eof         -> #lineinfo{};
     {ok, Line}  -> line_info(FileID, Line)
   end.
 
