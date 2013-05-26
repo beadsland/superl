@@ -185,6 +185,7 @@ do_run(IO, _ARG) ->
 -define(WARN_ARITY, 
         "~s: avoid too many parameters (~p arity function found)~n").
 
+% Report highest priority warning, if any.
 report_results(IO, Module, Info, MoreInfo) ->
   Ratio = round(Info#lineinfo.hlines / (Info#lineinfo.clines + 1) * 100),
   if Info#lineinfo.tabs == true     ->
