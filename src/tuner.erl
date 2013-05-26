@@ -52,24 +52,6 @@
 -include_lib("pose/include/interface.hrl").
 -include_lib("pose/include/macro.hrl").
 
-% BEGIN POSE PACKAGE IMPORTS
--ifdef(package).
--import(gen_command).
--import(pose).
--import(filename).
--import(filelib).
--import(sets).
--import(pose_syntax).
--import(code).
--import(pose_file).
--import(string).
--import(erlang).
--import(io_lib).
--import(re).
--import(file).
--endif.
-% END POSE PACKAGE IMPORTS
-
 %%
 %% Exported Functions
 %%

@@ -100,19 +100,6 @@
 
 -include_lib("kernel/include/file.hrl").
 
-% BEGIN POSE PACKAGE IMPORTS
--ifdef(package).
--import(gen_command).
--import(filename).
--import(file).
--import(lists).
--import(re).
--import(string).
--import(pose).
--import(pose_syntax).
--endif.
-% END POSE PACKAGE IMPORTS
-
 %%
 %% Exported Functions
 %%
