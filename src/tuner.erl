@@ -86,7 +86,8 @@ run(IO, ARG, ENV) -> gen_command:run(IO, ARG, ENV, ?MODULE).
 
 %% @private Callback entry point for gen_command behaviour.
 do_run(IO, _ARG) ->
-  ?STDOUT("Running Tuner ~s dialyzer PLT optimizer~n", [?VERSION(?MODULE)]),
+  ?STDOUT("Running Tuner ~s dialyzer PLT optimizer ~p~n", 
+          [?VERSION(?MODULE), self()]),
   {ok, Proj} = file:get_cwd(),
   Ebin = filename:join(Proj, "ebin"),  
   Src = filename:join(Proj, "src"),

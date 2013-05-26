@@ -134,7 +134,8 @@ run(IO, ARG, ENV) -> gen_command:run(IO, ARG, ENV, ?MODULE).
 
 %% @private Callback entry point for gen_command behaviour.
 do_run(IO, _ARG) ->
-  ?STDOUT("Running Superl ~s good style checker~n", [?VERSION(?MODULE)]),
+  ?STDOUT("Running Superl ~s good style checker ~p~n", 
+          [?VERSION(?MODULE), self()]),
 
   Src = filename:join(pose:iwd(), "src"),
   Inc = filename:join(pose:iwd(), "include"),
