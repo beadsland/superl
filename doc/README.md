@@ -84,5 +84,6 @@ If using the Eclipse IDE, one way to handle this is with the AnyEdit
 
 <table width="100%" border="0" summary="list of modules">
 <tr><td><a href="good.md" class="module">good</a></td></tr>
-<tr><td><a href="superl.md" class="module">superl</a></td></tr></table>
+<tr><td><a href="superl.md" class="module">superl</a></td></tr>
+<tr><td><a href="tuner.md" class="module">tuner</a></td></tr></table>
 

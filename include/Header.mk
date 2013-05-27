@@ -83,6 +83,7 @@ GREP =		grep --line-buffered
 SUCCINCT =	$(GREP) -v "Entering directory" | $(GREP) -v "Leaving directory"
 FOLD = 		cat
 CROWBAR	=	$(SUBPASS) $(REBAR) _cmds_ | $(SUCCINCT) 2>&1 | $(FOLD)
+DOCSBAR =	REBAR_ALT=include/rebar-edoc.config $(CROWBAR:_cmds_=_ecmds_)
 
 B_PREFIX = 	.unison/
 B_SUFFIX =	.0.bak
@@ -120,7 +121,7 @@ ERL	=		erl -noshell $(SILENT) -pz deps/parse_trans/ebin \
 POSURE	=	-s pose start posure
 ifndef SUPERL
 	SUPERL = -s pose start superl
-	TUNER =	-s pose start tuner	
+	TUNER =	-s pose start tuner
 else
 	SUBPASS += SUPERL="$(SUPERL)" TUNER="$(TUNER)" 	# only pass on if redefined
 endif
@@ -146,9 +147,18 @@ DOC_FILES = 	`git status --porcelain | grep ' doc/' | awk '{print $$2}'`
 
 PROJECT = $(shell basename $(CURDIR))
 
-GITIGNORE_PRE = if [ .gitignore -nt include/gitignore.template ]; \
-					then (cp -p .gitignore include/gitignore.template \
-						&& echo Updated gitignore.template for $(PROJECT)); fi
-GITIGNORE_POST = if [ include/gitignore.template -nt .gitignore ]; \
-					then (cp -p include/gitignore.template .gitignore \
-						&& echo Updated .gitignore for $(PROJECT)); fi
+PRESYNC = FILE=_file_ ; \
+			if [ $${FILE} -nt include/$${FILE}.template ]; \
+				then (cp -p $${FILE} include/$${FILE}.template \
+					&& echo Updated $${FILE}.template for $(PROJECT)); fi
+POSTSYNC = FILE=_file_ ; \
+				if [ include/$${FILE}.template -nt $${FILE} ]; \
+					then (cp -p include/$${FILE}.template $${FILE} \
+						&& echo Updated $${FILE} for $(PROJECT)); fi
+				
+PRESYNC_ALL = $(PRESYNC:_file_=.gitignore); \
+					$(PRESYNC:_file_=rebar.config.script)
+
+POSTSYNC_ALL = $(POSTSYNC:_file_=.gitignore); \
+					$(POSTSYNC:_file_=rebar.config.script)
+					
